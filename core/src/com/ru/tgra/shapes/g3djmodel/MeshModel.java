@@ -36,6 +36,9 @@ public class MeshModel {
 			for(MeshModelNodePart part : node.parts)
 			{
 				//send part.material.xxx into the shader
+				// TODO: value for alpha
+				shader.setMaterialDiffuse(part.material.diffuse.r, part.material.diffuse.g, part.material.diffuse.b, 1.0f);
+				shader.setMaterialSpecular(part.material.specular.r, part.material.specular.g, part.material.specular.b, 1.0f);
 
 				//use glVertexAttribPointer to activate the vertex and normal lists in part.part.mesh
 				//make sure you're reading these in 3 and 3 together, not 2 and 2 like the UV coordinates

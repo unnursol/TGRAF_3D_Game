@@ -235,12 +235,12 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			ModelMatrix.main.pushMatrix();
 
 			ModelMatrix.main.addTranslation(0.0f, 4.0f, 0.0f);
-			ModelMatrix.main.addScale(1f,1f,1f);
+			ModelMatrix.main.addScale(50f,50f,50f);
 			//ModelMatrix.main.addRotation(angle, new Vector3D(1,1,1));
 			shader.setModelMatrix(ModelMatrix.main.getMatrix());
 
-			//BoxGraphic.drawSolidCube(shader, tex);
-			model.draw(shader);
+			BoxGraphic.drawSolidCube(shader, tex);
+			//model.draw(shader);
 
 			ModelMatrix.main.popMatrix();
 	

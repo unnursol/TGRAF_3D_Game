@@ -19,31 +19,38 @@ public class BoxGraphic {
 	public static void create() {
 
 		//VERTEX ARRAY IS FILLED HERE
-		float[] vertexArray = {-0.5f, -0.5f, -0.5f,
+		float[] vertexArray = {
+						// back
+						-0.5f, -0.5f, -0.5f,
 						-0.5f, 0.5f, -0.5f,
 						0.5f, 0.5f, -0.5f,
 						0.5f, -0.5f, -0.5f,
-						
+
+						// front
 						-0.5f, -0.5f, 0.5f,
 						-0.5f, 0.5f, 0.5f,
 						0.5f, 0.5f, 0.5f,
 						0.5f, -0.5f, 0.5f,
-						
+
+						// bottom
 						-0.5f, -0.5f, -0.5f,
 						0.5f, -0.5f, -0.5f,
 						0.5f, -0.5f, 0.5f,
 						-0.5f, -0.5f, 0.5f,
-						
+
+						// top
 						-0.5f, 0.5f, -0.5f,
 						0.5f, 0.5f, -0.5f,
 						0.5f, 0.5f, 0.5f,
 						-0.5f, 0.5f, 0.5f,
-						
+
+						// left
 						-0.5f, -0.5f, -0.5f,
 						-0.5f, -0.5f, 0.5f,
 						-0.5f, 0.5f, 0.5f,
 						-0.5f, 0.5f, -0.5f,
-						
+
+						// right
 						0.5f, -0.5f, -0.5f,
 						0.5f, -0.5f, 0.5f,
 						0.5f, 0.5f, 0.5f,
@@ -55,31 +62,38 @@ public class BoxGraphic {
 
 
 		//NORMAL ARRAY IS FILLED HERE
-		float[] normalArray = {0.0f, 0.0f, -1.0f,
+		float[] normalArray = {
+							// back
 							0.0f, 0.0f, -1.0f,
 							0.0f, 0.0f, -1.0f,
 							0.0f, 0.0f, -1.0f,
-							
+							0.0f, 0.0f, -1.0f,
+
+							// front
 							0.0f, 0.0f, 1.0f,
 							0.0f, 0.0f, 1.0f,
 							0.0f, 0.0f, 1.0f,
 							0.0f, 0.0f, 1.0f,
-							
+
+							// bottom
 							0.0f, -1.0f, 0.0f,
 							0.0f, -1.0f, 0.0f,
 							0.0f, -1.0f, 0.0f,
 							0.0f, -1.0f, 0.0f,
-							
+
+							// top
 							0.0f, 1.0f, 0.0f,
 							0.0f, 1.0f, 0.0f,
 							0.0f, 1.0f, 0.0f,
 							0.0f, 1.0f, 0.0f,
-							
+
+							// left
 							-1.0f, 0.0f, 0.0f,
 							-1.0f, 0.0f, 0.0f,
 							-1.0f, 0.0f, 0.0f,
 							-1.0f, 0.0f, 0.0f,
-							
+
+							// right
 							1.0f, 0.0f, 0.0f,
 							1.0f, 0.0f, 0.0f,
 							1.0f, 0.0f, 0.0f,
@@ -91,35 +105,43 @@ public class BoxGraphic {
 
 
 		//UV TEXTURE COORD ARRAY IS FILLED HERE
-		float[] uvArray = {0.3333f, 0.3333f,
-							0.6666f, 0.3333f,
-							0.6666f, 0.6666f,
-							0.3333f, 0.6666f,
-							
-							0.6666f, 0.6666f,
-							1.0f, 0.6666f,
-							1.0f, 1.0f,
-							0.6666f, 1.0f,
-							
-							0.0f, 0.3333f,
-							1.0f, 0.3333f,
-							1.0f, 0.6666f,
-							0.0f, 0.6666f,
-							
-							0.6666f, 0.3333f,
-							1.0f, 0.3333f,
-							1.0f, 0.6666f,
-							0.6666f, 0.6666f,
-							
-							0.0f, 0.0f,
-							2.0f, 0.0f,
-							2.0f, 2.0f,
-							0.0f, 2.0f,
-							
-							0.0f, 1.0f,
-							1.0f, 1.0f,
-							1.0f, 0.0f,
-							0.0f, 0.0f};
+		float[] uvArray = {
+							//  back
+							1.0f, 0.66f,
+							1.0f, 0.33f,
+							0.75f, 0.33f,
+							0.75f, 0.66f,
+
+							// front
+							0.25f, 0.66f,
+							0.25f, 0.33f,
+							0.5f, 0.33f,
+							0.5f, 0.66f,
+
+
+							// bottom
+							0.25f, 1.0f,
+							0.5f, 1.0f,
+							0.5f, 0.66f,
+							0.25f, 0.66f,
+
+							// top
+							0.25f, 0.0f,
+							0.5f, 0.0f,
+							0.5f, 0.33f,
+							0.25f, 0.33f,
+
+							// left
+							0.0f, 0.66f,
+							0.25f, 0.66f,
+							0.25f, 0.33f,
+							0.0f, 0.33f,
+
+							// right
+							0.75f, 0.66f,
+							0.5f, 0.66f,
+							0.5f, 0.33f,
+							0.75f, 0.33f};
 
 		uvBuffer = BufferUtils.newFloatBuffer(48);
 		BufferUtils.copy(uvArray, 0, uvBuffer, 48);
