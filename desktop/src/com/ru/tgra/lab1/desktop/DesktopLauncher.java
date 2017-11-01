@@ -1,10 +1,8 @@
 package com.ru.tgra.lab1.desktop;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.ru.tgra.game.LabMeshTexGame;
+import com.ru.tgra.game.RaceGame;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -18,6 +16,6 @@ public class DesktopLauncher {
 		//config.fullscreen = true;
 		
 
-		new LwjglApplication(new LabMeshTexGame(), config);
+		new LwjglApplication(new RaceGame(), config);
 	}
 }

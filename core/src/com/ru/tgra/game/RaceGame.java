@@ -9,23 +9,21 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureData;
-import com.ru.tgra.graphics.*;
-import com.ru.tgra.graphics.shapes.*;
-import com.ru.tgra.graphics.shapes.g3djmodel.G3DJModelLoader;
-import com.ru.tgra.graphics.shapes.g3djmodel.MeshModel;
+import com.ru.tgra.models.*;
+import com.ru.tgra.objects.Camera;
+import com.ru.tgra.shapes.*;
+import com.ru.tgra.shapes.g3djmodel.G3DJModelLoader;
+import com.ru.tgra.shapes.g3djmodel.MeshModel;
 
-public class LabMeshTexGame extends ApplicationAdapter implements InputProcessor {
+public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 	Shader shader;
 
 	private float angle;
 
 	private Camera cam;
-	private Camera topCam;
+	private Camera orthoCam;
 	
 	private float fov = 90.0f;
 
@@ -45,7 +43,7 @@ public class LabMeshTexGame extends ApplicationAdapter implements InputProcessor
 
 		shader = new Shader();
 
-		tex = new Texture(Gdx.files.internal("textures/dice.png"));
+		tex = new Texture(Gdx.files.internal("textures/city1.jpg"));
 
 		model = G3DJModelLoader.loadG3DJFromFile("testModel.g3dj");
 
@@ -59,9 +57,9 @@ public class LabMeshTexGame extends ApplicationAdapter implements InputProcessor
 		cam = new Camera();
 		cam.look(new Point3D(0f, 4f, -3f), new Point3D(0,4,0), new Vector3D(0,1,0));
 
-		topCam = new Camera();
+		orthoCam = new Camera();
 		//orthoCam.orthographicProjection(-5, 5, -5, 5, 3.0f, 100);
-		topCam.perspectiveProjection(30.0f, 1, 3, 100);
+		orthoCam.perspectiveProjection(30.0f, 1, 3, 100);
 
 		//TODO: try this way to create a texture image
 		/*Pixmap pm = new Pixmap(128, 128, Format.RGBA8888);
@@ -77,9 +75,6 @@ public class LabMeshTexGame extends ApplicationAdapter implements InputProcessor
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
-	private void input()
-	{
-	}
 	
 	private void update()
 	{
@@ -163,21 +158,38 @@ public class LabMeshTexGame extends ApplicationAdapter implements InputProcessor
 		{
 			if(viewNum == 0)
 			{
-				Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
-				cam.perspectiveProjection(fov, (float)Gdx.graphics.getWidth() / (float)(2*Gdx.graphics.getHeight()), 0.2f, 100.0f);
+				Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+				cam.perspectiveProjection(fov, (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight(), 0.1f, 100.0f);
 				shader.setViewMatrix(cam.getViewMatrix());
 				shader.setProjectionMatrix(cam.getProjectionMatrix());
-				shader.setEyePosition(cam.eye.x, cam.eye.y, cam.eye.z, 1.0f);
+				shader.setLightPosition(cam.eye.x,cam.eye.y,cam.eye.z,1f);
 			}
 			else
 			{
-				Gdx.gl.glViewport(Gdx.graphics.getWidth() / 2, 0, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
-				topCam.look(new Point3D(cam.eye.x, 20.0f, cam.eye.z), cam.eye, new Vector3D(0,0,-1));
-				//orthoCam.look(new Point3D(7.0f, 40.0f, -7.0f), new Point3D(7.0f, 0.0f, -7.0f), new Vector3D(0,0,-1));
-				topCam.perspectiveProjection(30.0f, (float)Gdx.graphics.getWidth() / (float)(2*Gdx.graphics.getHeight()), 3, 100);
-				shader.setViewMatrix(topCam.getViewMatrix());
-				shader.setProjectionMatrix(topCam.getProjectionMatrix());
-				shader.setEyePosition(topCam.eye.x, topCam.eye.y, topCam.eye.z, 1.0f);
+				int miniMapHeight = 250;
+				int miniMapWidth = 250;
+				Gdx.gl.glViewport((Gdx.graphics.getWidth() - miniMapWidth), Gdx.graphics.getHeight() - miniMapHeight, miniMapWidth, miniMapHeight);
+				Point3D camTrace = new Point3D(cam.eye.x, cam.eye.y, cam.eye.z);
+//				if(orthoZoom * 2 > mazeSize * cellSize){
+//					camTrace.x = mazeSize * cellSize/2;
+//					camTrace.z = mazeSize * cellSize/2;
+//				} else{
+//					if(camTrace.x < orthoZoom){
+//						camTrace.x = orthoZoom - cellSize/4;
+//					} else if(camTrace.x > (mazeSize * cellSize) - orthoZoom){
+//						camTrace.x = (mazeSize * cellSize) - orthoZoom + cellSize/4;
+//					}
+//					if(camTrace.z < orthoZoom){
+//						camTrace.z = orthoZoom - cellSize/4;
+//					} else if((camTrace.z > (mazeSize * cellSize) - orthoZoom)) {
+//						camTrace.z = (mazeSize * cellSize) - orthoZoom + cellSize/4;
+//					}
+//				}
+				orthoCam.look(new Point3D(camTrace.x, 10.0f, camTrace.z), camTrace, new Vector3D(0,0,-1));
+				shader.setViewMatrix(orthoCam.getViewMatrix());
+				shader.setProjectionMatrix(orthoCam.getProjectionMatrix());
+
+				shader.setLightPosition(cam.eye.x,10f,cam.eye.z,1f);
 			}
 
 	
@@ -221,12 +233,14 @@ public class LabMeshTexGame extends ApplicationAdapter implements InputProcessor
 			shader.setShininess(50.0f);
 
 			ModelMatrix.main.pushMatrix();
+
 			ModelMatrix.main.addTranslation(0.0f, 4.0f, 0.0f);
-			ModelMatrix.main.addRotation(angle, new Vector3D(1,1,1));
+			ModelMatrix.main.addScale(1f,1f,1f);
+			//ModelMatrix.main.addRotation(angle, new Vector3D(1,1,1));
 			shader.setModelMatrix(ModelMatrix.main.getMatrix());
 
-			BoxGraphic.drawSolidCube(shader, tex);
-			//model.draw(shader);
+			//BoxGraphic.drawSolidCube(shader, tex);
+			model.draw(shader);
 
 			ModelMatrix.main.popMatrix();
 	
@@ -236,9 +250,6 @@ public class LabMeshTexGame extends ApplicationAdapter implements InputProcessor
 
 	@Override
 	public void render () {
-		
-		input();
-		//put the code inside the update and display methods, depending on the nature of the code
 		update();
 		display();
 
