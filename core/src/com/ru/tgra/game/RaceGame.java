@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.ru.tgra.models.*;
 import com.ru.tgra.objects.Camera;
+import com.ru.tgra.objects.SkyBox;
 import com.ru.tgra.shapes.*;
 import com.ru.tgra.shapes.g3djmodel.G3DJModelLoader;
 import com.ru.tgra.shapes.g3djmodel.MeshModel;
@@ -22,6 +23,10 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 	private float angle;
 
+	// Background graphics
+	SkyBox sky;
+
+	// Cameras
 	private Camera cam;
 	private Camera orthoCam;
 	
@@ -43,7 +48,7 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 		shader = new Shader();
 
-		tex = new Texture(Gdx.files.internal("textures/city1.jpg"));
+		//tex = new Texture(Gdx.files.internal("textures/city1.jpg"));
 
 		model = G3DJModelLoader.loadG3DJFromFile("testModel.g3dj");
 
@@ -53,6 +58,8 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 		ModelMatrix.main = new ModelMatrix();
 		ModelMatrix.main.loadIdentityMatrix();
 		shader.setModelMatrix(ModelMatrix.main.getMatrix());
+
+		sky = new SkyBox();
 
 		cam = new Camera();
 		cam.look(new Point3D(0f, 4f, -3f), new Point3D(0,4,0), new Vector3D(0,1,0));
@@ -225,7 +232,8 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			
 			shader.setGlobalAmbient(0.3f, 0.3f, 0.3f, 1);
 
-			//shader.setMaterialDiffuse(s, 0.4f, c, 1.0f);
+			sky.display(shader);
+
 			shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
 			shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
 			//shader.setMaterialSpecular(0.0f, 0.0f, 0.0f, 1.0f);
@@ -235,12 +243,10 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			ModelMatrix.main.pushMatrix();
 
 			ModelMatrix.main.addTranslation(0.0f, 4.0f, 0.0f);
-			ModelMatrix.main.addScale(50f,50f,50f);
+			ModelMatrix.main.addScale(1f,1f,1f);
 			//ModelMatrix.main.addRotation(angle, new Vector3D(1,1,1));
 			shader.setModelMatrix(ModelMatrix.main.getMatrix());
-
-			BoxGraphic.drawSolidCube(shader, tex);
-			//model.draw(shader);
+			model.draw(shader);
 
 			ModelMatrix.main.popMatrix();
 	

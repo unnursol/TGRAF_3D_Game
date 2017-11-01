@@ -118,7 +118,6 @@ public class BoxGraphic {
 							0.5f, 0.33f,
 							0.5f, 0.66f,
 
-
 							// bottom
 							0.25f, 1.0f,
 							0.5f, 1.0f,
