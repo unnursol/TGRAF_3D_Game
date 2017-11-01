@@ -2,7 +2,7 @@ package com.ru.tgra.lab1.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.ru.tgra.AMazeBallsGame;
+import com.ru.tgra.Game;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -14,6 +14,6 @@ public class DesktopLauncher {
 		config.x = 150;
 		config.y = 50;
 
-		new LwjglApplication(new AMazeBallsGame(), config);
+		new LwjglApplication(new Game(), config);
 	}
 }

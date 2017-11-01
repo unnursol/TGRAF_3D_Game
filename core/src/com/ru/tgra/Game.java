@@ -9,24 +9,18 @@ import com.ru.tgra.models.ModelMatrix;
 import com.ru.tgra.models.Point3D;
 import com.ru.tgra.models.Vector3D;
 import com.ru.tgra.objects.Camera;
-import com.ru.tgra.objects.maze.Maze;
-import com.ru.tgra.objects.SnowMan;
 import com.ru.tgra.objects.Token;
 import com.ru.tgra.shapes.*;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class AMazeBallsGame extends ApplicationAdapter {
+public class Game extends ApplicationAdapter {
 
 	// Game variables
-	private int level;
 	private int mazeSize;
 	private float cellSize;
-	private boolean levelingUp;
-	private boolean gamingOver;
-	private float levelingUpTime;
-	private float getLevelingUpSpeed = 0.6f;
+
 
 	// Player variables
 	private final int GOD_MODE = 0;
@@ -55,11 +49,9 @@ public class AMazeBallsGame extends ApplicationAdapter {
 
 	private float fov = 50.0f;
 
-	private Maze maze;
 	private float movementSpeed = 4f; // used with deltatime, WASD keys
 	private float mouseSpeed = 10f;
 	private float playerSize = 1f; // Radius of player circle, for collision and display in 2D
-	private SnowMan snowMan;
 
 	@Override
 	public void create () {
@@ -86,7 +78,7 @@ public class AMazeBallsGame extends ApplicationAdapter {
 		// Birkir and his amazing maze
 		mazeSize = 4;
 		cellSize = 6f;
-		maze = new Maze(mazeSize, mazeSize, cellSize, ModelMatrix.main, shader);
+
 
 		tokenNumber = (mazeSize*mazeSize) / 2;
 
@@ -99,12 +91,7 @@ public class AMazeBallsGame extends ApplicationAdapter {
 		// --- Player camera ---
 		cam = new Camera();
 		cam.perspectiveProjection(fov, (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight(), 0.4f, 100.0f);
-		if(maze.openEast(cellSize/2, cellSize/2)) {
-			cam.look(new Point3D((cellSize/2), 2.5f, (cellSize/2)), new Point3D(6,2.5f,lookEast), new Vector3D(0,1,0));
-		}
-		else {
-			cam.look(new Point3D((cellSize/2), 2.5f, (cellSize/2)), new Point3D(6,2.5f,lookSouth), new Vector3D(0,1,0));
-		}
+		cam.look(new Point3D((cellSize/2), 2.5f, (cellSize/2)), new Point3D(6,2.5f,lookEast), new Vector3D(0,1,0));
 
 		// --- Mini map camera ---
 		orthoCam = new Camera();
@@ -119,9 +106,6 @@ public class AMazeBallsGame extends ApplicationAdapter {
 		playerViewMode = FIRST_PERSON;
 		playerDirection = 0f;
 		score = 0;
-		level = 1;
-		levelingUp = false;
-		gamingOver = false;
 
 		// ----------------------------------
 		// 		  Token settings
@@ -130,9 +114,6 @@ public class AMazeBallsGame extends ApplicationAdapter {
 		tokenPositions = new ArrayList<Point3D>();
 		tokens = new ArrayList<Token>();
 		initializeTokens();
-		int snowManPos = rand.nextInt(mazeSize-1) + 1;
-		snowMan = new SnowMan((snowManPos * cellSize) + (cellSize / 2), (snowManPos * cellSize) + (cellSize / 2), ModelMatrix.main, shader);
-		snowMan.initDirection(maze);
 	}
 
 
@@ -144,20 +125,6 @@ public class AMazeBallsGame extends ApplicationAdapter {
 
 		Gdx.input.setCursorCatched(true);
 
-		if(levelingUp || gamingOver) {
-			if(levelingUpTime >= 1) {
-				levelingUpTime = 0f;
-				if(levelingUp){
-					levelingUp = false;
-					levelUp();
-				} else {
-					gamingOver = false;
-					gameOver();
-				}
-			}
-			levelingUpTime += getLevelingUpSpeed*deltaTime;
-		}
-		else {
 			if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 				cam.roll(110.f * deltaTime);
 				playerDirection -= 110f * deltaTime;
@@ -173,36 +140,17 @@ public class AMazeBallsGame extends ApplicationAdapter {
 				cam.pitch(-90.f * deltaTime);
 			}
 			if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-				if(playerViewMode == GOD_MODE) {
-					cam.slide(-movementSpeed * deltaTime, 0, 0);
-				}
-				else {
-					cam.slideMaze(-movementSpeed * deltaTime, 0, 0, maze, playerSize);
-				}
+				cam.slide(-movementSpeed * deltaTime, 0, 0);
 			}
 			if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-				if(playerViewMode == GOD_MODE) {
-					cam.slide(movementSpeed * deltaTime, 0, 0);
-				}
-				else {
-					cam.slideMaze(movementSpeed * deltaTime, 0, 0, maze, playerSize);
-				}
+				cam.slide(movementSpeed * deltaTime, 0, 0);
 			}
 			if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-				if(playerViewMode == GOD_MODE) {
-					cam.slide(0, 0, -movementSpeed * deltaTime);
-				}
-				else {
-					cam.slideMaze(0, 0, -movementSpeed * deltaTime, maze, playerSize);
-				}
+				cam.slide(0, 0, -movementSpeed * deltaTime);
+
 			}
 			if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-				if(playerViewMode == GOD_MODE){
-					cam.slide(0, 0, movementSpeed * deltaTime);
-				}
-				else if(playerViewMode == FIRST_PERSON) {
-					cam.slideMaze(0, 0, movementSpeed * deltaTime, maze, playerSize);
-				}
+				cam.slide(0, 0, movementSpeed * deltaTime);
 			}
 			if(playerViewMode == GOD_MODE)
 			{
@@ -225,8 +173,7 @@ public class AMazeBallsGame extends ApplicationAdapter {
 					cam.pitch(90.f * deltaTime);
 				}
 			}
-			snowMan.move(maze, cam.eye, deltaTime*movementSpeed/3);
-		}
+
 
 		if(Gdx.input.isKeyJustPressed(Input.Keys.V)) {
 			if(playerViewMode == GOD_MODE) {
@@ -263,23 +210,12 @@ public class AMazeBallsGame extends ApplicationAdapter {
 		if(removedToken != null)
 			tokens.remove(removedToken);
 
-		// --- Level updates ---
-		if(score == tokenNumber) {
-			levelingUp = true;
-		}
-
-		// Snowman collsion
-		if(cam.crashedIntoSnowman(snowMan)){
-			gamingOver = true;
-		}
 
 		// --- Mouse movement ---
 
 		cam.roll(-Gdx.input.getDeltaX() * deltaTime * mouseSpeed);
 		cam.pitch(-Gdx.input.getDeltaY() * deltaTime * mouseSpeed);
 
-		// Move snowMan
-		snowMan.move(maze, cam.eye, deltaTime*movementSpeed/2);
 
 	}
 
@@ -333,21 +269,9 @@ public class AMazeBallsGame extends ApplicationAdapter {
 			// ----------------------------------
 			shader.setLightDiffuse(1f,1f,1f,1f);
 
-			// ----------------------------------
-			// 		 Draw our MAZE here
-			// ----------------------------------
-
-			if(!levelingUp && !gamingOver) {
-				maze.display(viewNum == 0);
-			}
-			else if((levelingUp || gamingOver) && viewNum == 1) {
-				maze.display(viewNum == 0);
-			}
 			for(Token token : tokens) {
 				token.display();
 			}
-
-			snowMan.display(cam.eye);
 
 
 
@@ -364,64 +288,7 @@ public class AMazeBallsGame extends ApplicationAdapter {
 				shader.setModelMatrix(ModelMatrix.main.getMatrix());
 				SphereGraphic.drawSolidSphere();
 
-				// --- Background in the mini map ---
-				shader.setMaterialDiffuse(0f, 0f, 0f, 1f);
-				ModelMatrix.main.loadIdentityMatrix();
-				ModelMatrix.main.addScale(1000f, 0.4f, 1000f);
-				ModelMatrix.main.addTranslationBaseCoords(1,0.2f,1);
-				shader.setModelMatrix(ModelMatrix.main.getMatrix());
-				BoxGraphic.drawSolidCube();
-				ModelMatrix.main.popMatrix();
 			}
-		}
-
-		// ----------------------------------
-		// 		    Score display
-		// ----------------------------------
-		displayScore();
-	}
-
-	public void displayScore() {
-
-		int scoreHeight = 150;
-		int scoreWidth = 500;
-
-		Gdx.gl.glViewport(0, Gdx.graphics.getHeight() - scoreHeight, scoreWidth, scoreHeight);
-
-		scoreCam.look(new Point3D(0,40,0), new Point3D(0,1,0), new Vector3D(0,0,-1));
-		shader.setViewMatrix(scoreCam.getViewMatrix());
-		shader.setProjectionMatrix(scoreCam.getProjectionMatrix());
-
-		shader.setLightPosition(10,40f,10,1f);
-
-		float x = 10f;
-		int z = -10;
-		float scorebarLength = 150f;
-		float scorebarHeight = 5f;
-		float scoreSlotLength = (float)scorebarLength/((float)tokenNumber);
-
-		// Drawing empty scorebar
-		shader.setMaterialDiffuse(1f, 1f, 1f, 0.5f);
-		ModelMatrix.main.loadIdentityMatrix();
-		ModelMatrix.main.pushMatrix();
-		ModelMatrix.main.addScale(scorebarLength, 0.4f, scorebarHeight);
-		ModelMatrix.main.addTranslationBaseCoords(x,1f,z);
-		shader.setModelMatrix(ModelMatrix.main.getMatrix());
-		BoxGraphic.drawSolidCube();
-		ModelMatrix.main.popMatrix();
-
-
-		// Drawing score on the scorebar
-		for(int i = 0; i < score; i++) {
-			shader.setMaterialDiffuse(1f, 1f, 0f, 1f);
-			ModelMatrix.main.loadIdentityMatrix();
-			ModelMatrix.main.pushMatrix();
-			ModelMatrix.main.addScale(scoreSlotLength, 0.5f, scorebarHeight);
-			ModelMatrix.main.addTranslationBaseCoords(x - (scorebarLength/2)+(scoreSlotLength/2),1f,z);
-			shader.setModelMatrix(ModelMatrix.main.getMatrix());
-			BoxGraphic.drawSolidCube();
-			ModelMatrix.main.popMatrix();
-			x += scoreSlotLength;
 		}
 	}
 
@@ -430,43 +297,6 @@ public class AMazeBallsGame extends ApplicationAdapter {
 		//put the code inside the update and display methods, depending on the nature of the code
 		update();
 		display();
-	}
-
-
-	private void levelUp() {
-		level++;
-		mazeSize++;
-		tokenNumber = (mazeSize*mazeSize) / 2;
-		score = 0;
-		initializeTokens();
-		maze = new Maze(mazeSize, mazeSize, cellSize, ModelMatrix.main, shader);
-		if(maze.openEast(cellSize/2, cellSize/2)) {
-			cam.look(new Point3D((cellSize/2), 2.5f, (cellSize/2)), new Point3D(6,3,lookEast), new Vector3D(0,1,0));
-		}
-		else {
-			cam.look(new Point3D((cellSize/2), 2.5f, (cellSize/2)), new Point3D(6,3,lookSouth), new Vector3D(0,1,0));
-		}
-		int snowManPos = rand.nextInt(mazeSize-1) + 1;
-		snowMan = new SnowMan((snowManPos * cellSize) + (cellSize / 2), (snowManPos * cellSize) + (cellSize / 2), ModelMatrix.main, shader);
-		snowMan.initDirection(maze);
-	}
-
-	private void gameOver(){
-		level = 1;
-		mazeSize = 4;
-		tokenNumber = (mazeSize*mazeSize) / 2;
-		score = 0;
-		initializeTokens();
-		maze = new Maze(mazeSize, mazeSize, cellSize, ModelMatrix.main, shader);
-		if(maze.openEast(cellSize/2, cellSize/2)) {
-			cam.look(new Point3D((cellSize/2), 2.5f, (cellSize/2)), new Point3D(6,3,lookEast), new Vector3D(0,1,0));
-		}
-		else {
-			cam.look(new Point3D((cellSize/2), 2.5f, (cellSize/2)), new Point3D(6,3,lookSouth), new Vector3D(0,1,0));
-		}
-		int snowManPos = rand.nextInt(mazeSize-1) + 1;
-		snowMan = new SnowMan((snowManPos * cellSize) + (cellSize / 2), (snowManPos * cellSize) + (cellSize / 2), ModelMatrix.main, shader);
-		snowMan.initDirection(maze);
 	}
 
 	private void initializeTokens() {

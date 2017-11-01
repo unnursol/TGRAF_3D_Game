@@ -3,7 +3,6 @@ package com.ru.tgra.objects;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.ru.tgra.models.Point3D;
 import com.ru.tgra.models.Vector3D;
-import com.ru.tgra.objects.maze.Maze;
 
 import java.nio.FloatBuffer;
 
@@ -60,57 +59,6 @@ public class Camera {
         eye.z += delU*u.z + delV*v.z + delN*n.z;
     }
 
-    public void slideMaze(float delU, float delV, float delN, Maze maze, float radius){
-        float eyeX = eye.x + (delU*u.x + delV*v.x + delN*n.x);
-        float eyeZ = eye.z + (delU*u.z + delV*v.z + delN*n.z);
-
-        if((eye.z - eyeZ) > 0.0f) { // Moving North
-            float limitNorth = maze.cellLimitNorth(eyeZ);
-//            System.out.println("Moving North");
-//            System.out.println("Limit North: " + limitNorth);
-            if (eyeZ - radius > limitNorth) {
-                eye.z = eyeZ;
-            } else if (maze.openNorth(eyeX, eyeZ)) {
-                if (eye.x - radius > maze.cellLimitWest(eyeX) && eye.x + radius < maze.cellLimitEast(eyeX)) {
-                    eye.z = eyeZ;
-                }
-            }
-        } else { // Moving South
-            float limitSouth = maze.cellLimitSouth(eyeZ);
-//            System.out.println("Moving South");
-//            System.out.println("Limit South: " + limitSouth);
-            if(eyeZ + radius < limitSouth){
-                eye.z = eyeZ;
-            } else if(maze.openSouth(eyeX, eyeZ)){
-                if(eye.x - radius > maze.cellLimitWest(eyeX) && eye.x + radius < maze.cellLimitEast(eyeX)){
-                    eye.z = eyeZ;
-                }
-            }
-        }
-        if((eye.x - eyeX) < 0.0f){ // Moving East
-            float limitEast = maze.cellLimitEast(eyeX);
-//            System.out.println("Moving East");
-//            System.out.println("Limit East: " + limitEast);
-            if(eyeX + radius < limitEast){
-                eye.x = eyeX;
-            } else if(maze.openEast(eyeX, eyeZ)){
-                if(eye.z + radius < maze.cellLimitSouth(eyeZ) && eye.z - radius > maze.cellLimitNorth(eyeZ)){
-                    eye.x = eyeX;
-                }
-            }
-        } else { // Moving West
-            float limitWest = maze.cellLimitWest(eyeX);
-//            System.out.println("Moving West");
-//            System.out.println("Limit West: " + limitWest);
-            if(eyeX - radius > limitWest){
-                eye.x = eyeX;
-            } else if(maze.openWest(eyeX, eyeZ)){
-                if(eye.z + radius < maze.cellLimitSouth(eyeZ) && eye.z - radius > maze.cellLimitNorth(eyeZ)){
-                    eye.x = eyeX;
-                }
-            }
-        }
-    }
 
     public void roll(float angle)
     {
@@ -235,19 +183,5 @@ public class Camera {
             return false;
     }
 
-    public boolean crashedIntoSnowman(SnowMan snowMan){
-        float distX = eye.x - snowMan.pos.x;
-        float distY = eye.z - snowMan.pos.z;
-        if(distX < 0){
-            distX = -distX;
-        }
-        if(distY < 0){
-            distY = -distY;
-        }
-        if((distX <= (near + snowMan.size)) && (distY <= (near + snowMan.size))) {
-            return true;
-        }
-        else
-            return false;
-    }
+
 }
