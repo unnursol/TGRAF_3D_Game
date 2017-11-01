@@ -4,6 +4,7 @@ precision mediump float;
 
 attribute vec3 a_position;
 attribute vec3 a_normal;
+attribute vec2 a_uv;
 
 uniform mat4 u_modelMatrix;
 uniform mat4 u_viewMatrix;
@@ -14,6 +15,8 @@ uniform vec4 u_eyePosition;
 
 varying vec4 v_s;
 varying vec4 v_n;
+varying vec2 v_uv;
+varying vec4 v_h;
 
 void main()
 {
