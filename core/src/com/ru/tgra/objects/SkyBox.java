@@ -13,21 +13,20 @@ public class SkyBox {
     private Texture tex;
 
     public SkyBox() {
-        this.tex = new Texture(Gdx.files.internal("textures/city1.jpg"));
+        this.tex = new Texture(Gdx.files.internal("textures/texture.png"));
     }
 
     public void display(Shader shader) {
-        //shader.setMaterialDiffuse(s, 0.4f, c, 1.0f);
+
         shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
         shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
-        //shader.setMaterialSpecular(0.0f, 0.0f, 0.0f, 1.0f);
         shader.setMaterialEmission(0, 0, 0, 1);
         shader.setShininess(50.0f);
 
         ModelMatrix.main.pushMatrix();
 
-        ModelMatrix.main.addTranslation(0.0f, 4.0f, 0.0f);
-        ModelMatrix.main.addScale(50f,50f,50f);
+        ModelMatrix.main.addTranslation(0.0f, 30.0f, 0.0f);
+        ModelMatrix.main.addScale(80f,80f,80f);
         //ModelMatrix.main.addRotation(angle, new Vector3D(1,1,1));
         shader.setModelMatrix(ModelMatrix.main.getMatrix());
         ModelMatrix.main.popMatrix();

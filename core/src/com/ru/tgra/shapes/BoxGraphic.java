@@ -107,39 +107,39 @@ public class BoxGraphic {
 		//UV TEXTURE COORD ARRAY IS FILLED HERE
 		float[] uvArray = {
 							//  back
-							1.0f, 0.66f,
-							1.0f, 0.33f,
+							1.00f, 0.66f,
+							1.00f, 0.33f,
 							0.75f, 0.33f,
 							0.75f, 0.66f,
 
 							// front
 							0.25f, 0.66f,
 							0.25f, 0.33f,
-							0.5f, 0.33f,
-							0.5f, 0.66f,
+							0.50f, 0.33f,
+							0.50f, 0.66f,
 
 							// bottom
-							0.25f, 1.0f,
-							0.5f, 1.0f,
-							0.5f, 0.66f,
+							0.25f, 1.00f,
+							0.50f, 1.00f,
+							0.50f, 0.66f,
 							0.25f, 0.66f,
 
 							// top
-							0.25f, 0.0f,
-							0.5f, 0.0f,
-							0.5f, 0.33f,
+							0.25f, 0.00f,
+							0.50f, 0.00f,
+							0.50f, 0.33f,
 							0.25f, 0.33f,
 
 							// left
-							0.0f, 0.66f,
+							0.00f, 0.66f,
 							0.25f, 0.66f,
 							0.25f, 0.33f,
-							0.0f, 0.33f,
+							0.00f, 0.33f,
 
 							// right
 							0.75f, 0.66f,
-							0.5f, 0.66f,
-							0.5f, 0.33f,
+							0.50f, 0.66f,
+							0.50f, 0.33f,
 							0.75f, 0.33f};
 
 		uvBuffer = BufferUtils.newFloatBuffer(48);

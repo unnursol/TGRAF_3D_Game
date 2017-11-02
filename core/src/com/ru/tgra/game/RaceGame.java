@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.ru.tgra.models.*;
 import com.ru.tgra.objects.Camera;
+import com.ru.tgra.objects.Ground;
 import com.ru.tgra.objects.SkyBox;
 import com.ru.tgra.shapes.*;
 import com.ru.tgra.shapes.g3djmodel.G3DJModelLoader;
@@ -25,6 +26,7 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 	// Background graphics
 	SkyBox sky;
+	Ground ground;
 
 	// Cameras
 	private Camera cam;
@@ -60,6 +62,7 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 		shader.setModelMatrix(ModelMatrix.main.getMatrix());
 
 		sky = new SkyBox();
+		ground = new Ground();
 
 		cam = new Camera();
 		cam.look(new Point3D(0f, 4f, -3f), new Point3D(0,4,0), new Vector3D(0,1,0));
@@ -233,6 +236,7 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			shader.setGlobalAmbient(0.3f, 0.3f, 0.3f, 1);
 
 			sky.display(shader);
+			//ground.display(shader);
 
 			shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
 			shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
