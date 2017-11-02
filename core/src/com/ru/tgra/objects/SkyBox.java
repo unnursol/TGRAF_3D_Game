@@ -13,7 +13,7 @@ public class SkyBox {
     private Texture tex;
 
     public SkyBox() {
-        this.tex = new Texture(Gdx.files.internal("textures/texture.png"));
+        this.tex = new Texture(Gdx.files.internal("textures/water.jpg"));
     }
 
     public void display(Shader shader) {
