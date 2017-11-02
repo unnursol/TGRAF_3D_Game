@@ -10,9 +10,9 @@ public class Ground {
     Point3D center;
     float scale;
 
-    public Ground() {
-        center = new Point3D(0f, -20f, 0f);
-        scale = 20f;
+    public Ground(Point3D position, float groundScale) {
+        center = position;
+        scale = groundScale;
     }
 
     public Point3D getCenter(){

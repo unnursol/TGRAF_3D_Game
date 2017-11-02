@@ -23,6 +23,8 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 	// Background graphics
 	SkyBox sky;
 	Ground ground;
+	public static Point3D groundPosition;
+	public static float groundScale;
 
 	// Cameras
 	private Camera cam;
@@ -56,7 +58,7 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 		shader = new Shader();
 
-		playerCar = new Car(shader);
+
 //		playerCar = G3DJModelLoader.loadG3DJFromFile("lpCar.g3dj");
 
 		BoxGraphic.create();
@@ -67,10 +69,15 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 		shader.setModelMatrix(ModelMatrix.main.getMatrix());
 
 		sky = new SkyBox();
-		ground = new Ground();
+		groundPosition = new Point3D(0,-20,0);
+		groundScale = 20f;
+		ground = new Ground(groundPosition, groundScale);
+
+		playerCar = new Car(shader);
+
 
 		cam = new Camera();
-		cam.look(new Point3D(0f, 4f, -3f), new Point3D(0,4,0), new Vector3D(0,1,0));
+		cam.look(new Point3D(0f, 4f, -6f), new Point3D(0,4,0), new Vector3D(0,1,0));
 
 		orthoCam = new Camera();
 		//orthoCam.orthographicProjection(-5, 5, -5, 5, 3.0f, 100);
