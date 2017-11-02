@@ -76,6 +76,14 @@ public class Shader {
 		Gdx.gl.glUseProgram(renderingProgramID);
 	}
 
+	public void setShader()
+	{
+		Gdx.gl.glUseProgram(renderingProgramID);
+		Gdx.gl.glEnableVertexAttribArray(positionLoc);
+		Gdx.gl.glEnableVertexAttribArray(normalLoc);
+		Gdx.gl.glEnableVertexAttribArray(uvLoc);
+	}
+
 	public void setDiffuseTexture(Texture tex)
 	{
 		if(tex == null)

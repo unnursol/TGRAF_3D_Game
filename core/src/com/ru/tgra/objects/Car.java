@@ -28,7 +28,7 @@ public class Car
         this.shader = shader;
         model = G3DJModelLoader.loadG3DJFromFile("lpCar.g3dj");
     }
-    
+
     public Point3D getPosition()
     {
         return modelPosition;

@@ -13,8 +13,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.ru.tgra.models.*;
 import com.ru.tgra.objects.*;
 import com.ru.tgra.shapes.*;
-import com.ru.tgra.shapes.g3djmodel.G3DJModelLoader;
-import com.ru.tgra.shapes.g3djmodel.MeshModel;
 
 public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
@@ -37,7 +35,16 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 	private Texture tex;
 	
-	Random rand = new Random();
+	private Random rand = new Random();
+
+	// Menu stuff
+	private Menu menu;
+	private Boolean mainMenu = true;
+	private Boolean gameOverMenu = false;
+
+	// Score
+	private int score = 0;
+
 
 	@Override
 	public void create () {
@@ -81,6 +88,8 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 		tex = new Texture(pm);*/
 
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+		menu = new Menu();
 	}
 
 	
@@ -148,7 +157,11 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			Gdx.app.exit();
 		}
 
-		//do all updates to the game
+		// Start the game
+		if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && mainMenu)
+		{
+			mainMenu = false;
+		}
 	}
 	
 	private void display()
@@ -202,11 +215,6 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 				shader.setLightPosition(cam.eye.x,10f,cam.eye.z,1f);
 			}
 
-	
-			//BoxGraphic.drawOutlineCube();
-			//SphereGraphic.drawSolidSphere();
-			//SphereGraphic.drawOutlineSphere();
-
 
 			ModelMatrix.main.loadIdentityMatrix();
 
@@ -235,7 +243,6 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			
 			shader.setGlobalAmbient(0.3f, 0.3f, 0.3f, 1);
 
-			sky.display(shader);
 			ground.display(shader);
 
 			shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
@@ -256,8 +263,24 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			playerCar.display();
 
 			ModelMatrix.main.popMatrix();
-	
+
 //			drawPyramids();
+
+			if( viewNum == 0)
+			{
+				sky.display(shader);
+
+				// Display score and menus
+				if(mainMenu) {
+					menu.displayMainMenu(shader);
+				}
+				else if(gameOverMenu) {
+					menu.displayGameOver(shader, score);
+				}
+				else {
+					menu.displayScore(shader, score);
+				}
+			}
 		}
 	}
 
