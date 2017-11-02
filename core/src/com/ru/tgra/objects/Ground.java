@@ -2,12 +2,25 @@ package com.ru.tgra.objects;
 
 import com.ru.tgra.models.ModelMatrix;
 import com.ru.tgra.models.Shader;
-import com.ru.tgra.shapes.BoxGraphic;
+import com.ru.tgra.shapes.SphereGraphic;
+import com.ru.tgra.models.*;
 
 public class Ground {
 
-    public Ground() {
+    Point3D center;
+    float scale;
 
+    public Ground() {
+        center = new Point3D(0f, -20f, 0f);
+        scale = 20f;
+    }
+
+    public Point3D getCenter(){
+        return center;
+    }
+
+    public float getScale(){
+        return scale;
     }
 
     public void display(Shader shader) {
@@ -19,13 +32,13 @@ public class Ground {
 
         ModelMatrix.main.pushMatrix();
 
-        ModelMatrix.main.addTranslation(0.0f, 0.0f, 0.0f);
-        ModelMatrix.main.addScale(50f,2f,50f);
+        ModelMatrix.main.addTranslation(center.x, center.y, center.z);
+        ModelMatrix.main.addScale(scale,scale,scale);
         //ModelMatrix.main.addRotation(angle, new Vector3D(1,1,1));
         shader.setModelMatrix(ModelMatrix.main.getMatrix());
         ModelMatrix.main.popMatrix();
 
-        BoxGraphic.drawSolidCube(shader, null);
+        SphereGraphic.drawSolidSphere(shader, null, null);
 
     }
 }

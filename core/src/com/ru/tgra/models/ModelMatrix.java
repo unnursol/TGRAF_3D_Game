@@ -142,6 +142,6 @@ public class ModelMatrix extends Matrix {
 		MMtmp[2] = 2*x*z - 2*y*w; MMtmp[6] = 2*y*z + 2*x*w; MMtmp[10] = 1 - 2*x*x - 2*y*y; MMtmp[14] = 0;
 		MMtmp[3] = 0; MMtmp[7] = 0; MMtmp[11] = 0; MMtmp[15] = 1;
 
-		this.addTransformation(MMtmp);
+			this.addTransformation(MMtmp);
 	}
 }

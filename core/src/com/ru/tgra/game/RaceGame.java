@@ -11,9 +11,7 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.ru.tgra.models.*;
-import com.ru.tgra.objects.Camera;
-import com.ru.tgra.objects.Ground;
-import com.ru.tgra.objects.SkyBox;
+import com.ru.tgra.objects.*;
 import com.ru.tgra.shapes.*;
 import com.ru.tgra.shapes.g3djmodel.G3DJModelLoader;
 import com.ru.tgra.shapes.g3djmodel.MeshModel;
@@ -34,7 +32,8 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 	
 	private float fov = 90.0f;
 
-	MeshModel playerCar;
+//	MeshModel playerCar;
+	Car playerCar;
 
 	private Texture tex;
 	
@@ -50,7 +49,8 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 		shader = new Shader();
 
-		playerCar = G3DJModelLoader.loadG3DJFromFile("lpCar.g3dj");
+		playerCar = new Car(shader);
+//		playerCar = G3DJModelLoader.loadG3DJFromFile("lpCar.g3dj");
 
 		BoxGraphic.create();
 		SphereGraphic.create();
@@ -89,6 +89,8 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 		float deltaTime = Gdx.graphics.getDeltaTime();
 
 		angle += 180.0f * deltaTime;
+
+		playerCar.update(deltaTime);
 
 		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
 			cam.slide(-3.0f * deltaTime, 0, 0);
@@ -234,7 +236,7 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			shader.setGlobalAmbient(0.3f, 0.3f, 0.3f, 1);
 
 			sky.display(shader);
-			//ground.display(shader);
+			ground.display(shader);
 
 			shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
 			shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
@@ -248,11 +250,14 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			ModelMatrix.main.addScale(1f,1f,1f);
 			//ModelMatrix.main.addRotation(angle, new Vector3D(1,1,1));
 			shader.setModelMatrix(ModelMatrix.main.getMatrix());
-			playerCar.draw(shader);
+
+			// Draw the playerCar
+
+			playerCar.display();
 
 			ModelMatrix.main.popMatrix();
 	
-			drawPyramids();
+//			drawPyramids();
 		}
 	}
 
