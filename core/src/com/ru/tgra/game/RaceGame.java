@@ -34,7 +34,7 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 	
 	private float fov = 90.0f;
 
-	MeshModel model;
+	MeshModel playerCar;
 
 	private Texture tex;
 	
@@ -43,16 +43,14 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 	@Override
 	public void create () {
 
+		// Fullscreen
 		Gdx.input.setInputProcessor(this);
-
 		DisplayMode disp = Gdx.graphics.getDesktopDisplayMode();
 		Gdx.graphics.setDisplayMode(disp.width, disp.height, true);
 
 		shader = new Shader();
 
-		//tex = new Texture(Gdx.files.internal("textures/city1.jpg"));
-
-		model = G3DJModelLoader.loadG3DJFromFile("testModel.g3dj");
+		playerCar = G3DJModelLoader.loadG3DJFromFile("lpCar.g3dj");
 
 		BoxGraphic.create();
 		SphereGraphic.create();
