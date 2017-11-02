@@ -273,7 +273,7 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			if( viewNum == 0)
 			{
 				sky.display(shader);
-				
+
 				// Display score and menus
 				if(mainMenu) {
 					menu.displayMainMenu(shader);

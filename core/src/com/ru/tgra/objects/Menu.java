@@ -23,7 +23,11 @@ public class Menu {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/GROBOLD.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 50;
-        fontLarge = generator.generateFont(parameter); // font size 12 pixels
+        fontLarge = generator.generateFont(parameter); // font size 50 pixels
+        parameter.size = 30;
+        fontMedium = generator.generateFont(parameter); // font size 30 pixels
+        parameter.size = 12;
+        fontSmall = generator.generateFont(parameter); // font size 12 pixels
         generator.dispose(); // don't forget to dispose to avoid memory leaks!
     }
 
@@ -33,6 +37,24 @@ public class Menu {
 
         shader.setShader();
     }
+
+    public void displayGameOver(Shader shader, int score) {
+        Point3D position = new Point3D(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0f);
+        displayText(fontLarge, "GAME OVER", position);
+        position.y -= 100f;
+        displayText(fontLarge, "SCORE: " + score, position);
+        position.y -= 100f;
+        displayText(fontMedium, "PRESS ENTER TO TRY AGAIN", position);
+        shader.setShader();
+    }
+
+    public void displayScore(Shader shader, int score) {
+        Point3D position = new Point3D(200, Gdx.graphics.getHeight()-40, 0f);
+        displayText(fontLarge, "SCORE: " + score, position);
+
+        shader.setShader();
+    }
+
     private void displayText(BitmapFont font, String text, Point3D position) {
 
         layout = new GlyphLayout(font, text);
@@ -51,16 +73,5 @@ public class Menu {
 
         batch.end();
 
-
-    }
-
-    public void displayGameOver(Shader shader, int score) {
-    }
-
-    public void displayScore(Shader shader, int score) {
-        Point3D position = new Point3D(200, Gdx.graphics.getHeight()-40, 0f);
-        displayText(fontLarge, "SCORE: " + score, position);
-
-        shader.setShader();
     }
 }
