@@ -6,7 +6,6 @@ import java.util.Random;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,7 +13,7 @@ import com.ru.tgra.models.*;
 import com.ru.tgra.objects.*;
 import com.ru.tgra.shapes.*;
 
-public class RaceGame extends ApplicationAdapter implements InputProcessor {
+public class RaceGame extends ApplicationAdapter {
 
 	Shader shader;
 
@@ -57,7 +56,6 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 	public void create () {
 
 		// Fullscreen
-		Gdx.input.setInputProcessor(this);
 		DisplayMode disp = Gdx.graphics.getDesktopDisplayMode();
 		Gdx.graphics.setDisplayMode(disp.width, disp.height, true);
 
@@ -108,12 +106,26 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 	{
 		float deltaTime = Gdx.graphics.getDeltaTime();
 
-		angle += 180.0f * deltaTime;
-
+		// While playing the game
 		if(!mainMenu && !gameOverMenu) {
 			playerCar.update(deltaTime);
 			tree.update(deltaTime, objSpeed);
 		}
+
+		// Quit the game
+		if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+		{
+			Gdx.graphics.setDisplayMode(500, 500, false);
+			Gdx.app.exit();
+		}
+
+		// Start the game
+		if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && mainMenu)
+		{
+			mainMenu = false;
+		}
+
+		// ------------ Camera god mode stuff ---------------
 
 		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
 			cam.slide(-3.0f * deltaTime, 0, 0);
@@ -135,7 +147,6 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 		if(Gdx.input.isKeyPressed(Input.Keys.F)) {
 			cam.slide(0, -3.0f * deltaTime, 0);
 		}
-
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 			cam.yaw(-90.0f * deltaTime);
 			//cam.rotateY(90.0f * deltaTime);
@@ -163,18 +174,6 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.G)) {
 			fov += 30.0f * deltaTime;
-		}
-
-		if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
-		{
-			Gdx.graphics.setDisplayMode(500, 500, false);
-			Gdx.app.exit();
-		}
-
-		// Start the game
-		if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && mainMenu)
-		{
-			mainMenu = false;
 		}
 	}
 	
@@ -207,21 +206,6 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 				int miniMapWidth = 250;
 				Gdx.gl.glViewport((Gdx.graphics.getWidth() - miniMapWidth), Gdx.graphics.getHeight() - miniMapHeight, miniMapWidth, miniMapHeight);
 				Point3D camTrace = new Point3D(cam.eye.x, cam.eye.y, cam.eye.z);
-//				if(orthoZoom * 2 > mazeSize * cellSize){
-//					camTrace.x = mazeSize * cellSize/2;
-//					camTrace.z = mazeSize * cellSize/2;
-//				} else{
-//					if(camTrace.x < orthoZoom){
-//						camTrace.x = orthoZoom - cellSize/4;
-//					} else if(camTrace.x > (mazeSize * cellSize) - orthoZoom){
-//						camTrace.x = (mazeSize * cellSize) - orthoZoom + cellSize/4;
-//					}
-//					if(camTrace.z < orthoZoom){
-//						camTrace.z = orthoZoom - cellSize/4;
-//					} else if((camTrace.z > (mazeSize * cellSize) - orthoZoom)) {
-//						camTrace.z = (mazeSize * cellSize) - orthoZoom + cellSize/4;
-//					}
-//				}
 				orthoCam.look(new Point3D(camTrace.x, 10.0f, camTrace.z), camTrace, new Vector3D(0,0,-1));
 				shader.setViewMatrix(orthoCam.getViewMatrix());
 				shader.setProjectionMatrix(orthoCam.getProjectionMatrix());
@@ -229,10 +213,7 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 				shader.setLightPosition(cam.eye.x,10f,cam.eye.z,1f);
 			}
 
-
 			ModelMatrix.main.loadIdentityMatrix();
-
-			//ModelMatrix.main.addRotationZ(angle);
 
 			float s = (float)Math.sin((angle / 2.0) * Math.PI / 180.0);
 			float c = (float)Math.cos((angle / 2.0) * Math.PI / 180.0);
@@ -240,7 +221,6 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			shader.setLightPosition(0.0f + c * 3.0f, 5.0f, 0.0f + s * 3.0f, 1.0f);
 			//shader.setLightPosition(3.0f, 4.0f, 0.0f, 1.0f);
 			//shader.setLightPosition(cam.eye.x, cam.eye.y, cam.eye.z, 1.0f);
-
 
 			float s2 = Math.abs((float)Math.sin((angle / 1.312) * Math.PI / 180.0));
 			float c2 = Math.abs((float)Math.cos((angle / 1.312) * Math.PI / 180.0));
@@ -259,26 +239,18 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 			shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
 			shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
-			//shader.setMaterialSpecular(0.0f, 0.0f, 0.0f, 1.0f);
 			shader.setMaterialEmission(0, 0, 0, 1);
 			shader.setShininess(50.0f);
 
-
-
-			ModelMatrix.main.pushMatrix();
-
-			ModelMatrix.main.addTranslation(0.0f, 4.0f, 0.0f);
-			ModelMatrix.main.addScale(1f,1f,1f);
-			//ModelMatrix.main.addRotation(angle, new Vector3D(1,1,1));
 			shader.setModelMatrix(ModelMatrix.main.getMatrix());
 
+			// Draw the ground
 			ground.display(shader);
+
 			// Draw the playerCar
 			playerCar.display();
 
-			ModelMatrix.main.popMatrix();
-
-			// Display objects
+			// Draw objects
 			tree.display();
 
 			if( viewNum == 0)
@@ -366,46 +338,4 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			ModelMatrix.main.popMatrix();
 		}
 	}
-
-	@Override
-	public boolean keyDown(int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyUp(int keycode) {
-		return false;
-	}
-
-	@Override
-	public boolean keyTyped(char character) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		return false;
-	}
-
-
 }
