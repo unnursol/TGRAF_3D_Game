@@ -23,6 +23,8 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 	// Background graphics
 	SkyBox sky;
 	Ground ground;
+	public static Point3D groundPosition;
+	public static float groundScale;
 
 	// Cameras
 	private Camera cam;
@@ -30,7 +32,6 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 	
 	private float fov = 90.0f;
 
-//	MeshModel playerCar;
 	Car playerCar;
 
 	private Texture tex;
@@ -45,6 +46,10 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 	// Score
 	private int score = 0;
 
+	// Objects
+	private Crate crate;
+	private Tree tree;
+
 
 	@Override
 	public void create () {
@@ -56,9 +61,6 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 		shader = new Shader();
 
-		playerCar = new Car(shader);
-//		playerCar = G3DJModelLoader.loadG3DJFromFile("lpCar.g3dj");
-
 		BoxGraphic.create();
 		SphereGraphic.create();
 
@@ -67,14 +69,20 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 		shader.setModelMatrix(ModelMatrix.main.getMatrix());
 
 		sky = new SkyBox();
-		ground = new Ground();
+		groundPosition = new Point3D(0,-20,0);
+		groundScale = 20f;
+		ground = new Ground(groundPosition, groundScale);
+
+		playerCar = new Car(shader);
+		//crate = new Crate(shader, 3);
+		tree = new Tree(shader, 6);
 
 		cam = new Camera();
-		cam.look(new Point3D(0f, 4f, -3f), new Point3D(0,4,0), new Vector3D(0,1,0));
+		cam.look(new Point3D(0f, 4f, -6f), new Point3D(0,4,0), new Vector3D(0,1,0));
 
 		orthoCam = new Camera();
 		//orthoCam.orthographicProjection(-5, 5, -5, 5, 3.0f, 100);
-		orthoCam.perspectiveProjection(70.0f, 1, 3, 100);
+		orthoCam.perspectiveProjection(100.0f, 1, 3, 100);
 
 		//TODO: try this way to create a texture image
 		/*Pixmap pm = new Pixmap(128, 128, Format.RGBA8888);
@@ -99,7 +107,9 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 		angle += 180.0f * deltaTime;
 
-		playerCar.update(deltaTime);
+		if(!mainMenu && !gameOverMenu) {
+			playerCar.update(deltaTime);
+		}
 
 		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
 			cam.slide(-3.0f * deltaTime, 0, 0);
@@ -260,12 +270,12 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 			ground.display(shader);
 			// Draw the playerCar
-
 			playerCar.display();
 
 			ModelMatrix.main.popMatrix();
 
-//			drawPyramids();
+			// Display objects
+			tree.display();
 
 			if( viewNum == 0)
 			{
