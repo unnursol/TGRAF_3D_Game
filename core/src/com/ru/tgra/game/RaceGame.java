@@ -74,7 +74,7 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 		orthoCam = new Camera();
 		//orthoCam.orthographicProjection(-5, 5, -5, 5, 3.0f, 100);
-		orthoCam.perspectiveProjection(30.0f, 1, 3, 100);
+		orthoCam.perspectiveProjection(70.0f, 1, 3, 100);
 
 		//TODO: try this way to create a texture image
 		/*Pixmap pm = new Pixmap(128, 128, Format.RGBA8888);
@@ -243,13 +243,13 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			
 			shader.setGlobalAmbient(0.3f, 0.3f, 0.3f, 1);
 
-			ground.display(shader);
-
 			shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
 			shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
 			//shader.setMaterialSpecular(0.0f, 0.0f, 0.0f, 1.0f);
 			shader.setMaterialEmission(0, 0, 0, 1);
 			shader.setShininess(50.0f);
+
+
 
 			ModelMatrix.main.pushMatrix();
 
@@ -258,6 +258,7 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			//ModelMatrix.main.addRotation(angle, new Vector3D(1,1,1));
 			shader.setModelMatrix(ModelMatrix.main.getMatrix());
 
+			ground.display(shader);
 			// Draw the playerCar
 
 			playerCar.display();
