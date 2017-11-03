@@ -50,6 +50,8 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 	private Crate crate;
 	private Tree tree;
 
+	// Game settings
+	private float objSpeed = 22;
 
 	@Override
 	public void create () {
@@ -75,7 +77,8 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 		playerCar = new Car(shader);
 		//crate = new Crate(shader, 3);
-		tree = new Tree(shader, 6);
+
+		tree = new Tree(shader, 6, -10);
 
 		cam = new Camera();
 		cam.look(new Point3D(0f, 4f, -6f), new Point3D(0,4,0), new Vector3D(0,1,0));
@@ -109,6 +112,7 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 		if(!mainMenu && !gameOverMenu) {
 			playerCar.update(deltaTime);
+			tree.update(deltaTime, objSpeed);
 		}
 
 		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
