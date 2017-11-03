@@ -1,5 +1,7 @@
 package com.ru.tgra.objects;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.ru.tgra.models.ModelMatrix;
 import com.ru.tgra.models.Shader;
 import com.ru.tgra.shapes.SphereGraphic;
@@ -7,12 +9,14 @@ import com.ru.tgra.models.*;
 
 public class Ground {
 
+    private Texture tex;
     Point3D center;
     float scale;
 
     public Ground(Point3D position, float groundScale) {
         center = position;
         scale = groundScale;
+        this.tex = new Texture(Gdx.files.internal("textures/spectex01.png"));
     }
 
     public Point3D getCenter(){

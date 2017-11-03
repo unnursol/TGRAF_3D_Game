@@ -3,18 +3,14 @@ package com.ru.tgra.objects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.ru.tgra.game.RaceGame;
-import com.ru.tgra.shapes.g3djmodel.*;
-import com.ru.tgra.models.*;
-import com.sun.org.apache.xpath.internal.operations.Mod;
-//import com.ru.tgra.motion.BezierMotion;
-//import com.ru.tgra.motion.LinearMotion;
+import com.ru.tgra.models.ModelMatrix;
+import com.ru.tgra.models.Point3D;
+import com.ru.tgra.models.Shader;
+import com.ru.tgra.models.Vector3D;
+import com.ru.tgra.shapes.g3djmodel.G3DJModelLoader;
+import com.ru.tgra.shapes.g3djmodel.MeshModel;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public class Car
-{
+public class Crate {
     private Shader shader;
 
     private Point3D modelPosition;
@@ -25,12 +21,18 @@ public class Car
 
     private Point3D groundCenter;
 
-    public Car(Shader shader)
+    public Crate(Shader shader, float angle)
     {
-        float y = (RaceGame.groundPosition.y + RaceGame.groundScale);
-        modelPosition = new Point3D(0, y, 0);
+        //float y = (RaceGame.groundPosition.y + RaceGame.groundScale);
+
         this.shader = shader;
-        model = G3DJModelLoader.loadG3DJFromFile("lpCar.g3dj");
+//        model = G3DJModelLoader.loadG3DJFromFile("sumthin");
+        this.angle = angle;
+        float radians = angle * (float)Math.PI / 180.0f;
+        float x = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radians));
+        float y = (float) (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radians));
+        modelPosition = new Point3D(x, y, 0);
+
     }
 
     public Point3D getPosition()

@@ -32,7 +32,6 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 	
 	private float fov = 90.0f;
 
-//	MeshModel playerCar;
 	Car playerCar;
 
 	private Texture tex;
@@ -47,6 +46,10 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 	// Score
 	private int score = 0;
 
+	// Objects
+	private Crate crate;
+	private Tree tree;
+
 
 	@Override
 	public void create () {
@@ -57,9 +60,6 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 		Gdx.graphics.setDisplayMode(disp.width, disp.height, true);
 
 		shader = new Shader();
-
-
-//		playerCar = G3DJModelLoader.loadG3DJFromFile("lpCar.g3dj");
 
 		BoxGraphic.create();
 		SphereGraphic.create();
@@ -74,7 +74,8 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 		ground = new Ground(groundPosition, groundScale);
 
 		playerCar = new Car(shader);
-
+		//crate = new Crate(shader, 3);
+		tree = new Tree(shader, 6);
 
 		cam = new Camera();
 		cam.look(new Point3D(0f, 4f, -6f), new Point3D(0,4,0), new Vector3D(0,1,0));
@@ -106,7 +107,9 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 
 		angle += 180.0f * deltaTime;
 
-		playerCar.update(deltaTime);
+		if(!mainMenu && !gameOverMenu) {
+			playerCar.update(deltaTime);
+		}
 
 		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
 			cam.slide(-3.0f * deltaTime, 0, 0);
@@ -266,12 +269,12 @@ public class RaceGame extends ApplicationAdapter implements InputProcessor {
 			shader.setModelMatrix(ModelMatrix.main.getMatrix());
 
 			// Draw the playerCar
-
 			playerCar.display();
 
 			ModelMatrix.main.popMatrix();
 
-//			drawPyramids();
+			// Display objects
+			tree.display();
 
 			if( viewNum == 0)
 			{
