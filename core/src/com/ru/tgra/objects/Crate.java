@@ -26,7 +26,7 @@ public class Crate {
         //float y = (RaceGame.groundPosition.y + RaceGame.groundScale);
 
         this.shader = shader;
-//        model = G3DJModelLoader.loadG3DJFromFile("sumthin");
+        model = G3DJModelLoader.loadG3DJFromFile("Crate1.g3dj");
         this.angle = angle;
         float radians = angle * (float)Math.PI / 180.0f;
         float x = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radians));

@@ -40,18 +40,18 @@ public class Car
 
     public void update(float rawDeltaTime)
     {
-        if(Gdx.input.isKeyPressed(Input.Keys.O) && modelPosition.x <= 5)
+        if(Gdx.input.isKeyJustPressed(Input.Keys.O) && modelPosition.x <= 3)
         {
-            angle -= 1;
+            angle -= 5;
             float radians = angle * (float)Math.PI / 180.0f;
             float x = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radians));
             float y = (float) (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radians));
             modelPosition.y = y;
             modelPosition.x = x;
         }
-        else if(Gdx.input.isKeyPressed(Input.Keys.P) && modelPosition.x >= -5)
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.P) && modelPosition.x >= -3)
         {
-            angle += 1;
+            angle += 5;
             float radians = angle * (float)Math.PI / 180.0f;
             float x = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radians));
             float y = (float) (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radians));

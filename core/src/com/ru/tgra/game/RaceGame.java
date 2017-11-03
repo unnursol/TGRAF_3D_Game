@@ -1,6 +1,7 @@
 package com.ru.tgra.game;
 
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -12,6 +13,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.ru.tgra.models.*;
 import com.ru.tgra.objects.*;
 import com.ru.tgra.shapes.*;
+
+import static java.lang.System.in;
 
 public class RaceGame extends ApplicationAdapter {
 
@@ -47,7 +50,8 @@ public class RaceGame extends ApplicationAdapter {
 
 	// Objects
 	private Crate crate;
-	private Tree tree;
+	private ArrayList<Tree> trees;
+	private ArrayList<Crystal> crystals;
 
 	// Game settings
 	private float objSpeed = 22;
@@ -73,11 +77,19 @@ public class RaceGame extends ApplicationAdapter {
 		groundScale = 20f;
 		ground = new Ground(groundPosition, groundScale);
 
+		// Initialize arrays of objects
+		trees = new ArrayList<Tree>();
+		crystals = new ArrayList<Crystal>();
+
 		playerCar = new Car(shader);
-		//crate = new Crate(shader, 3);
+		crate = new Crate(shader, 3);
 
-		tree = new Tree(shader, 6, -10);
-
+		Tree tree = new Tree(shader, 15, -10);
+		Crystal crystal1 = new Crystal(shader, 0, -20);
+		crystals.add(crystal1);
+		Crystal crystal2 = new Crystal(shader, 5, -30);
+		crystals.add(crystal2);
+		trees.add(tree);
 		cam = new Camera();
 		cam.look(new Point3D(0f, 4f, -6f), new Point3D(0,4,0), new Vector3D(0,1,0));
 
@@ -109,7 +121,13 @@ public class RaceGame extends ApplicationAdapter {
 		// While playing the game
 		if(!mainMenu && !gameOverMenu) {
 			playerCar.update(deltaTime);
-			tree.update(deltaTime, objSpeed);
+
+			for(Tree tree : trees) {
+				tree.update(deltaTime, objSpeed);
+			}
+			for(Crystal crystal : crystals) {
+				crystal.update(deltaTime, objSpeed);
+			}
 		}
 
 		// Quit the game
@@ -251,7 +269,13 @@ public class RaceGame extends ApplicationAdapter {
 			playerCar.display();
 
 			// Draw objects
-			tree.display();
+			for(Tree tree : trees) {
+				tree.display();
+			}
+
+			for(Crystal crystal : crystals) {
+				crystal.display();
+			}
 
 			if( viewNum == 0)
 			{
