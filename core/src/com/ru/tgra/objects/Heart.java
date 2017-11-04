@@ -8,7 +8,7 @@ import com.ru.tgra.models.Vector3D;
 import com.ru.tgra.shapes.g3djmodel.G3DJModelLoader;
 import com.ru.tgra.shapes.g3djmodel.MeshModel;
 
-public class Tree {
+public class Heart {
 
     private Shader shader;
 
@@ -17,20 +17,14 @@ public class Tree {
     private float angleX = 0;
     private float angleZ = 0;
 
-    private MeshModel palmTree;
-    private MeshModel oakTree;
+    private MeshModel model;
 
     private Point3D groundCenter;
 
-    public Tree(Shader shader, float angleX, float angleZ, int tree)
+    public Heart(Shader shader, float angleX, float angleZ)
     {
         this.shader = shader;
-        if(tree == 0) {
-            palmTree = G3DJModelLoader.loadG3DJFromFile("Palm_Tree.g3dj");
-        }
-        else if(tree == 1) {
-            oakTree = G3DJModelLoader.loadG3DJFromFile("Oak_Tree.g3dj");
-        }
+        model = G3DJModelLoader.loadG3DJFromFile("heart.g3dj");
 
         this.angleX = angleX;
         float radiansX = angleX * (float)Math.PI / 180.0f;
@@ -40,7 +34,7 @@ public class Tree {
         float radiansZ = angleZ * (float)Math.PI / 180.0f;
         float z = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radiansZ));
         float y = (float) ((RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansX))-
-                (RaceGame.groundPosition.y  + RaceGame.groundScale * Math.cos(radiansZ)));
+                (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansZ)));
 
         modelPosition = new Point3D(x, y, z);
 
@@ -59,7 +53,7 @@ public class Tree {
         float radiansZ = angleZ * (float)Math.PI / 180.0f;
         float z = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radiansZ));
         float y = (float) ((RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansX))-
-                            (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansZ)));
+                (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansZ)));
         modelPosition.z = z;
         modelPosition.y = y;
     }
@@ -72,7 +66,7 @@ public class Tree {
         ModelMatrix.main.addRotationX(-angleZ);
         ModelMatrix.main.addTranslation(modelPosition.x, modelPosition.y, modelPosition.z);
         shader.setModelMatrix(ModelMatrix.main.getMatrix());
-        palmTree.draw(shader);
+        model.draw(shader);
         ModelMatrix.main.popMatrix();
     }
 }

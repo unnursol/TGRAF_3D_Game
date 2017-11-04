@@ -52,6 +52,8 @@ public class RaceGame extends ApplicationAdapter {
 	private Crate crate;
 	private ArrayList<Tree> trees;
 	private ArrayList<Crystal> crystals;
+	private ArrayList<Coin> coins;
+	private ArrayList<Heart> hearts;
 
 	// Game settings
 	private float objSpeed = 22;
@@ -80,18 +82,29 @@ public class RaceGame extends ApplicationAdapter {
 		// Initialize arrays of objects
 		trees = new ArrayList<Tree>();
 		crystals = new ArrayList<Crystal>();
+		coins = new ArrayList<Coin>();
+		hearts = new ArrayList<Heart>();
 
 		playerCar = new Car(shader);
 		crate = new Crate(shader, 3);
 
-		Tree tree = new Tree(shader, 15, -10);
+		Tree tree = new Tree(shader, 15, -10, 0);
 		Crystal crystal1 = new Crystal(shader, 0, -20);
 		crystals.add(crystal1);
 		Crystal crystal2 = new Crystal(shader, 5, -30);
 		crystals.add(crystal2);
+
 		trees.add(tree);
+
+		Coin coin = new Coin(shader, 0, -20);
+		coins.add(coin);
+
+		Heart heart = new Heart(shader, 0, -5);
+		hearts.add(heart);
+
+		// Initialize cameras
 		cam = new Camera();
-		cam.look(new Point3D(0f, 4f, -6f), new Point3D(0,4,0), new Vector3D(0,1,0));
+		cam.look(new Point3D(0f, 4f, -3f), new Point3D(0,1,5), new Vector3D(0,5,0));
 
 		orthoCam = new Camera();
 		//orthoCam.orthographicProjection(-5, 5, -5, 5, 3.0f, 100);
@@ -127,6 +140,12 @@ public class RaceGame extends ApplicationAdapter {
 			}
 			for(Crystal crystal : crystals) {
 				crystal.update(deltaTime, objSpeed);
+			}
+			for(Coin coin : coins) {
+				coin.update(deltaTime, objSpeed);
+			}
+			for(Heart heart : hearts) {
+				heart.update(deltaTime, objSpeed);
 			}
 		}
 
@@ -275,6 +294,14 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(Crystal crystal : crystals) {
 				crystal.display();
+			}
+
+			for(Coin coin : coins) {
+				coin.display();
+			}
+
+			for(Heart heart : hearts) {
+				//heart.display();
 			}
 
 			if( viewNum == 0)
