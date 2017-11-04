@@ -20,7 +20,7 @@ public class Ground {
         this.shader = shader;
         center = position;
         scale = groundScale;
-        model = G3DJModelLoader.loadG3DJFromFile("globe2.g3dj");
+        model = G3DJModelLoader.loadG3DJFromFile("globe.g3dj");
     }
 
     public Point3D getCenter(){
