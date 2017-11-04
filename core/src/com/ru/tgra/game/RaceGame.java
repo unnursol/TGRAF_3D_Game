@@ -61,6 +61,8 @@ public class RaceGame extends ApplicationAdapter {
 	private float objSpeed = 22;
 	Music music;
 	private static float[] lane = new float[]{ -16, -8, 0, 8, 16, 24 };
+	private float zInterval = 10;
+	
 
 	private static float rightSide = -24;
 	private static float leftSide = 24;
@@ -144,6 +146,7 @@ public class RaceGame extends ApplicationAdapter {
 
 		// While playing the game
 		if(!mainMenu && !gameOverMenu) {
+			spawnObjects();
 			playerCar.update(deltaTime);
 			ground.update(deltaTime, objSpeed);
 
@@ -236,6 +239,10 @@ public class RaceGame extends ApplicationAdapter {
 		if(Gdx.input.isKeyPressed(Input.Keys.G)) {
 			fov += 30.0f * deltaTime;
 		}
+	}
+
+	private void spawnObjects() {
+
 	}
 
 	private boolean sameLane(float lane) {

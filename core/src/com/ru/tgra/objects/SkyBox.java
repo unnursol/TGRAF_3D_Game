@@ -25,8 +25,9 @@ public class SkyBox {
 
         ModelMatrix.main.pushMatrix();
 
-        ModelMatrix.main.addTranslation(0.0f, 30.0f, 0.0f);
+        ModelMatrix.main.addTranslation(0.0f, -20.0f, 0.0f);
         ModelMatrix.main.addScale(80f,80f,80f);
+        ModelMatrix.main.addRotationX(40);
         //ModelMatrix.main.addRotation(angle, new Vector3D(1,1,1));
         shader.setModelMatrix(ModelMatrix.main.getMatrix());
         ModelMatrix.main.popMatrix();
