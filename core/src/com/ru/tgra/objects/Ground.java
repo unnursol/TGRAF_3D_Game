@@ -6,17 +6,21 @@ import com.ru.tgra.models.ModelMatrix;
 import com.ru.tgra.models.Shader;
 import com.ru.tgra.shapes.SphereGraphic;
 import com.ru.tgra.models.*;
+import com.ru.tgra.shapes.g3djmodel.G3DJModelLoader;
+import com.ru.tgra.shapes.g3djmodel.MeshModel;
 
 public class Ground {
 
-    private Texture tex;
+    private Shader shader;
+    private MeshModel model;
     Point3D center;
     float scale;
 
-    public Ground(Point3D position, float groundScale) {
+    public Ground(Point3D position, float groundScale, Shader shader) {
+        this.shader = shader;
         center = position;
         scale = groundScale;
-        this.tex = new Texture(Gdx.files.internal("textures/spectex01.png"));
+        model = G3DJModelLoader.loadG3DJFromFile("globe2.g3dj");
     }
 
     public Point3D getCenter(){
@@ -27,12 +31,12 @@ public class Ground {
         return scale;
     }
 
-    public void display(Shader shader) {
+    public void display() {
 
-        shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-        shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
-        shader.setMaterialEmission(0, 0, 0, 1);
-        shader.setShininess(50.0f);
+//        shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
+//        shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
+//        shader.setMaterialEmission(0, 0, 0, 1);
+//        shader.setShininess(50.0f);
 
         ModelMatrix.main.pushMatrix();
 
@@ -40,9 +44,10 @@ public class Ground {
         ModelMatrix.main.addScale(scale,scale,scale);
         //ModelMatrix.main.addRotation(angle, new Vector3D(1,1,1));
         shader.setModelMatrix(ModelMatrix.main.getMatrix());
+        model.draw(shader);
         ModelMatrix.main.popMatrix();
 
-        SphereGraphic.drawSolidSphere(shader, null, null);
+//        SphereGraphic.drawSolidSphere(shader, null, null);
 
     }
 }
