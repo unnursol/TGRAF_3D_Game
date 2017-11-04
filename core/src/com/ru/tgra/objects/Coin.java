@@ -22,7 +22,7 @@ public class Coin extends Object{
 
     public void update(float rawDeltaTime, float speed)
     {
-        super.update(rawDeltaTime, speed);
-        angleY += selfRotationSpeed*rawDeltaTime;
+        super.update(speed);
+        angleY += selfRotationSpeed * rawDeltaTime;
     }
 }

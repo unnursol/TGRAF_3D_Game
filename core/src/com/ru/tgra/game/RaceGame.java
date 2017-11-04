@@ -171,10 +171,10 @@ public class RaceGame extends ApplicationAdapter {
 			ground.update(objSpeed);
 
 			for(Tree tree : trees) {
-				tree.update(deltaTime, objSpeed);
+				tree.update(objSpeed);
 			}
 			for(Crystal crystal : crystals) {
-				crystal.update(deltaTime, objSpeed);
+				crystal.update(objSpeed);
 			}
 
 			Coin removedCoin = null;
