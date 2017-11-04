@@ -64,7 +64,8 @@ public class RaceGame extends ApplicationAdapter {
 	private float objSpeed = 0f;
 	Music music;
 	private static float[] lane = new float[]{ -16, -8, 0, 8, 16, 24 };
-	private float zInterval = 10;
+	private float zDistance = 0f;
+	private float zInterval = 15f;
 	
 
 	private static float rightSide = -24;
@@ -162,6 +163,11 @@ public class RaceGame extends ApplicationAdapter {
 			if(objSpeed > maxspeed){
 				objSpeed = maxspeed;
 			}
+		}
+		zDistance += objSpeed;
+		if(zDistance > zInterval){
+			zDistance = 0f;
+			spawnObjects();
 		}
 
 		// While playing the game
