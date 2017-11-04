@@ -91,10 +91,10 @@ public class RaceGame extends ApplicationAdapter {
 		playerCar = new Car(shader);
 		crate = new Crate(shader, 3);
 
-		Tree tree = new Tree(shader, 15, -10, 0);
-		Crystal crystal1 = new Crystal(shader, 0, -20);
-		crystals.add(crystal1);
-		Crystal crystal2 = new Crystal(shader, 5, -30);
+		Tree tree = new Tree(shader, 28, -10, 0);
+//		Crystal crystal1 = new Crystal(shader, 0, -20);
+//		crystals.add(crystal1);
+		Crystal crystal2 = new Crystal(shader, 8, -30);
 		crystals.add(crystal2);
 
 		trees.add(tree);

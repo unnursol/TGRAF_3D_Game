@@ -42,7 +42,7 @@ public class Car
     {
         if(Gdx.input.isKeyJustPressed(Input.Keys.O) && modelPosition.x <= 3)
         {
-            angle -= 5;
+            angle -= 8;
             float radians = angle * (float)Math.PI / 180.0f;
             float x = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radians));
             float y = (float) (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radians));
@@ -51,7 +51,7 @@ public class Car
         }
         else if(Gdx.input.isKeyJustPressed(Input.Keys.P) && modelPosition.x >= -3)
         {
-            angle += 5;
+            angle += 8;
             float radians = angle * (float)Math.PI / 180.0f;
             float x = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radians));
             float y = (float) (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radians));
