@@ -35,7 +35,7 @@ public class RaceGame extends ApplicationAdapter {
 	private Camera cam;
 	private Camera orthoCam;
 	
-	private float fov = 60.0f;
+	private float fov = 70.0f;
 
 	Car playerCar;
 
@@ -119,7 +119,7 @@ public class RaceGame extends ApplicationAdapter {
 
 		// Initialize cameras
 		cam = new Camera();
-		cam.look(new Point3D(0f, 5.2f, -2f), new Point3D(0,3.7f,-0.3f), new Vector3D(0,1,0));
+		cam.look(new Point3D(0f, 6f, -2f), new Point3D(0,0f,3f), new Vector3D(0,1,0));
 
 		orthoCam = new Camera();
 		//orthoCam.orthographicProjection(-5, 5, -5, 5, 3.0f, 100);
