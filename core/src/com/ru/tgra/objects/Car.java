@@ -70,4 +70,8 @@ public class Car
         model.draw(shader);
         ModelMatrix.main.popMatrix();
     }
+
+    public float getLane() {
+        return angle;
+    }
 }
