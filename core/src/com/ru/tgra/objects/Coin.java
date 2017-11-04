@@ -61,4 +61,14 @@ public class Coin {
         model.draw(shader);
         ModelMatrix.main.popMatrix();
     }
+
+    public float getLane() {
+        return angleX;
+    }
+
+    public boolean collidingWithPlayer() {
+        if(angleZ >= -0.5f && angleZ <= 3f)
+            return true;
+        return false;
+    }
 }

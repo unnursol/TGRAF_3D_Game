@@ -60,6 +60,11 @@ public class RaceGame extends ApplicationAdapter {
 	// Game settings
 	private float objSpeed = 22;
 	Music music;
+	private static float[] lane = new float[]{ -16, -8, 0, 8, 16, 24 };
+
+	private static float rightSide = -24;
+	private static float leftSide = 24;
+
 
 	@Override
 	public void create () {
@@ -91,23 +96,23 @@ public class RaceGame extends ApplicationAdapter {
 		playerCar = new Car(shader);
 		crate = new Crate(shader, 3);
 
-		Tree tree = new Tree(shader, 28, -10, 0);
+		Tree tree = new Tree(shader, leftSide, -10, 0);
 //		Crystal crystal1 = new Crystal(shader, 0, -20);
 //		crystals.add(crystal1);
-		Crystal crystal2 = new Crystal(shader, 8, -30);
+		Crystal crystal2 = new Crystal(shader, lane[2], -30);
 		crystals.add(crystal2);
 
 		trees.add(tree);
 
-		Coin coin = new Coin(shader, 0, -20);
+		Coin coin = new Coin(shader, lane[0], -20);
 		coins.add(coin);
 
-		Heart heart = new Heart(shader, 0, -5);
+		Heart heart = new Heart(shader, lane[0], -5);
 		hearts.add(heart);
 
 		// Initialize cameras
 		cam = new Camera();
-		cam.look(new Point3D(0f, 4f, -3f), new Point3D(0,1,5), new Vector3D(0,5,0));
+		cam.look(new Point3D(0f, 5.2f, -2f), new Point3D(0,3.7f,-0.3f), new Vector3D(0,1,0));
 
 		orthoCam = new Camera();
 		//orthoCam.orthographicProjection(-5, 5, -5, 5, 3.0f, 100);
@@ -148,9 +153,21 @@ public class RaceGame extends ApplicationAdapter {
 			for(Crystal crystal : crystals) {
 				crystal.update(deltaTime, objSpeed);
 			}
+
+			Coin removedCoin = null;
 			for(Coin coin : coins) {
 				coin.update(deltaTime, objSpeed);
+				if(sameLane(coin.getLane())) {
+					if(coin.collidingWithPlayer()) {
+						removedCoin = coin;
+						score += 10;
+					}
+				}
 			}
+			if(removedCoin != null) {
+				coins.remove(removedCoin);
+			}
+
 			for(Heart heart : hearts) {
 				heart.update(deltaTime, objSpeed);
 			}
@@ -220,7 +237,16 @@ public class RaceGame extends ApplicationAdapter {
 			fov += 30.0f * deltaTime;
 		}
 	}
-	
+
+	private boolean sameLane(float lane) {
+		if(lane == playerCar.getLane()) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	private void display()
 	{
 		//do all actual drawing and rendering here
@@ -243,6 +269,9 @@ public class RaceGame extends ApplicationAdapter {
 				shader.setViewMatrix(cam.getViewMatrix());
 				shader.setProjectionMatrix(cam.getProjectionMatrix());
 				shader.setLightPosition(cam.eye.x,cam.eye.y,cam.eye.z,1f);
+				System.out.println("FIRST PARAMETER: " + cam.eye.x + ", " + cam.eye.y + ", " + cam.eye.z);
+				System.out.println("n (differnce(eye, center)): " + cam.n.x + ", " + cam.n.y + ", " + cam.n.z );
+				System.out.println("u (upp.cross(n)): " + cam.u.x + ", " + cam.u.y + ", " + cam.u.z );
 			}
 			else
 			{
