@@ -33,7 +33,8 @@ public class Crystal {
 
         float radiansZ = angleZ * (float)Math.PI / 180.0f;
         float z = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radiansZ));
-        float y = (float) (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansX) * Math.cos(radiansZ));
+        float y = (float) ((RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansX))-
+                (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansZ)));
 
         modelPosition = new Point3D(x, y, z);
 
