@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.ru.tgra.models.*;
 import com.ru.tgra.objects.*;
 import com.ru.tgra.shapes.*;
+import com.ru.tgra.utilities.RandomGenerator;
 
 import static java.lang.System.in;
 
@@ -172,7 +173,6 @@ public class RaceGame extends ApplicationAdapter {
 
 		// While playing the game
 		if(!mainMenu && !gameOverMenu) {
-			spawnObjects();
 			playerCar.update(deltaTime);
 			ground.update(objSpeed);
 
@@ -186,11 +186,9 @@ public class RaceGame extends ApplicationAdapter {
 			Coin removedCoin = null;
 			for(Coin coin : coins) {
 				coin.update(deltaTime, objSpeed);
-				if(sameLane(coin.getLane())) {
-					if(coin.collidingWithPlayer()) {
-						removedCoin = coin;
-						score += 10;
-					}
+				if(sameLane(coin.getLane()) && coin.collidingWithPlayer()) {
+					removedCoin = coin;
+					score += 10;
 				}
 			}
 			if(removedCoin != null) {
@@ -268,7 +266,9 @@ public class RaceGame extends ApplicationAdapter {
 	}
 
 	private void spawnObjects() {
-
+		int laneNr = RandomGenerator.randomIntegerInRange(0,4);
+		float p = RandomGenerator.randomFloatInRange(0,1);
+		
 	}
 
 	private boolean sameLane(float lane) {
