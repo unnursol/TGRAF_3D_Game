@@ -140,6 +140,7 @@ public class RaceGame extends ApplicationAdapter {
 		// While playing the game
 		if(!mainMenu && !gameOverMenu) {
 			playerCar.update(deltaTime);
+			ground.update(deltaTime, objSpeed);
 
 			for(Tree tree : trees) {
 				tree.update(deltaTime, objSpeed);

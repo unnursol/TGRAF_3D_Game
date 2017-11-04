@@ -11,12 +11,14 @@ import com.ru.tgra.shapes.g3djmodel.MeshModel;
 
 public class Ground {
 
+    float angleX;
     private Shader shader;
     private MeshModel model;
     Point3D center;
     float scale;
 
     public Ground(Point3D position, float groundScale, Shader shader) {
+        angleX = 0f;
         this.shader = shader;
         center = position;
         scale = groundScale;
@@ -31,6 +33,10 @@ public class Ground {
         return scale;
     }
 
+    public void update(float deltatime, float speed){
+        angleX -= speed * deltatime;
+    }
+
     public void display() {
 
 //        shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
@@ -42,12 +48,9 @@ public class Ground {
 
         ModelMatrix.main.addTranslation(center.x, center.y, center.z);
         ModelMatrix.main.addScale(scale,scale,scale);
-        //ModelMatrix.main.addRotation(angle, new Vector3D(1,1,1));
+        ModelMatrix.main.addRotationX(angleX);
         shader.setModelMatrix(ModelMatrix.main.getMatrix());
         model.draw(shader);
         ModelMatrix.main.popMatrix();
-
-//        SphereGraphic.drawSolidSphere(shader, null, null);
-
     }
 }
