@@ -64,7 +64,7 @@ public class RaceGame extends ApplicationAdapter {
 	private float acceleration = 0f;
 	private float objSpeed = 0f;
 	Music music;
-	private static float[] lane = new float[]{ -16, -8, 0, 8, 16, 24 };
+	private static float[] lanes = new float[]{ -16, -8, 0, 8, 16 };
 	private float zDistance = 0f;
 	private float zInterval = 15f;
 	
@@ -106,15 +106,15 @@ public class RaceGame extends ApplicationAdapter {
 		Tree tree = new Tree(shader, leftSide, -10, 0);
 //		Crystal crystal1 = new Crystal(shader, 0, -20);
 //		crystals.add(crystal1);
-		Crystal crystal2 = new Crystal(shader, lane[2], -30);
+		Crystal crystal2 = new Crystal(shader, lanes[2], -30);
 		crystals.add(crystal2);
 
 		trees.add(tree);
 
-		Coin coin = new Coin(shader, lane[0], -20);
+		Coin coin = new Coin(shader, lanes[0], -20);
 		coins.add(coin);
 
-		Heart heart = new Heart(shader, lane[0], -5);
+		Heart heart = new Heart(shader, lanes[0], -5);
 		hearts.add(heart);
 
 		// Initialize cameras
@@ -124,6 +124,7 @@ public class RaceGame extends ApplicationAdapter {
 		orthoCam = new Camera();
 		//orthoCam.orthographicProjection(-5, 5, -5, 5, 3.0f, 100);
 		orthoCam.perspectiveProjection(100.0f, 1, 3, 100);
+		orthoCam.look(new Point3D(0f, 10.0f, 0f), new Point3D(0f, 0f, 0f), new Vector3D(0,0,1));
 
 		//TODO: try this way to create a texture image
 		/*Pixmap pm = new Pixmap(128, 128, Format.RGBA8888);
@@ -149,10 +150,7 @@ public class RaceGame extends ApplicationAdapter {
 		acceleration = 0f;
 	}
 
-	
-	private void update()
-	{
-		float deltaTime = Gdx.graphics.getDeltaTime();
+	private void updateSpeed(float deltaTime){
 		if(acceleration < maxAccelration){
 			acceleration += deltaTime * 0.1f;
 			if(acceleration > maxAccelration){
@@ -165,14 +163,17 @@ public class RaceGame extends ApplicationAdapter {
 				objSpeed = maxspeed;
 			}
 		}
-		zDistance += objSpeed;
-		if(zDistance > zInterval){
-			zDistance = 0f;
-			spawnObjects();
-		}
+	}
+
+	
+	private void update()
+	{
+		float deltaTime = Gdx.graphics.getDeltaTime();
 
 		// While playing the game
 		if(!mainMenu && !gameOverMenu) {
+			updateSpeed(deltaTime);
+			spawnObjects();
 			playerCar.update(deltaTime);
 			ground.update(objSpeed);
 
@@ -266,9 +267,17 @@ public class RaceGame extends ApplicationAdapter {
 	}
 
 	private void spawnObjects() {
+		zDistance += objSpeed;
+		if(zDistance < zInterval){
+			return;
+		}
+		zDistance = 0f;
+
 		int laneNr = RandomGenerator.randomIntegerInRange(0,4);
 		float p = RandomGenerator.randomFloatInRange(0,1);
-		
+
+		Coin newCoin = new Coin(shader, lanes[laneNr], -30);
+		coins.add(newCoin);
 	}
 
 	private boolean sameLane(float lane) {
@@ -312,7 +321,6 @@ public class RaceGame extends ApplicationAdapter {
 				int miniMapWidth = 250;
 				Gdx.gl.glViewport((Gdx.graphics.getWidth() - miniMapWidth), Gdx.graphics.getHeight() - miniMapHeight, miniMapWidth, miniMapHeight);
 				Point3D camTrace = new Point3D(cam.eye.x, cam.eye.y, cam.eye.z);
-				orthoCam.look(new Point3D(camTrace.x, 10.0f, camTrace.z), camTrace, new Vector3D(0,0,-1));
 				shader.setViewMatrix(orthoCam.getViewMatrix());
 				shader.setProjectionMatrix(orthoCam.getProjectionMatrix());
 
