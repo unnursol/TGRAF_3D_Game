@@ -8,6 +8,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Graphics.DisplayMode;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.ru.tgra.models.*;
@@ -57,6 +59,7 @@ public class RaceGame extends ApplicationAdapter {
 
 	// Game settings
 	private float objSpeed = 22;
+	Music music;
 
 	@Override
 	public void create () {
@@ -120,6 +123,9 @@ public class RaceGame extends ApplicationAdapter {
 			}
 		}
 		tex = new Texture(pm);*/
+
+		music = Gdx.audio.newMusic(Gdx.files.internal("audio/song1.mp3"));
+		music.play();
 
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
