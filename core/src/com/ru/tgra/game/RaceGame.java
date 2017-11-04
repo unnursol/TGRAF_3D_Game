@@ -75,7 +75,7 @@ public class RaceGame extends ApplicationAdapter {
 		sky = new SkyBox();
 		groundPosition = new Point3D(0,-20,0);
 		groundScale = 20f;
-		ground = new Ground(groundPosition, groundScale);
+		ground = new Ground(groundPosition, groundScale, shader);
 
 		// Initialize arrays of objects
 		trees = new ArrayList<Tree>();
@@ -262,11 +262,11 @@ public class RaceGame extends ApplicationAdapter {
 
 			shader.setModelMatrix(ModelMatrix.main.getMatrix());
 
-			// Draw the ground
-			ground.display(shader);
-
 			// Draw the playerCar
 			playerCar.display();
+
+			// Draw the ground
+			ground.display();
 
 			// Draw objects
 			for(Tree tree : trees) {
