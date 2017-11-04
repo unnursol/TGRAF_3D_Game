@@ -21,6 +21,7 @@ public class Tree {
     private MeshModel oakTree;
 
     private Point3D groundCenter;
+    private float groundRadius;
 
     public Tree(Shader shader, float angleX, float angleZ, int tree)
     {
@@ -31,19 +32,10 @@ public class Tree {
         else if(tree == 1) {
             oakTree = G3DJModelLoader.loadG3DJFromFile("Oak_Tree.g3dj");
         }
-
+        this.groundCenter = RaceGame.groundPosition;
+        this.groundRadius = RaceGame.groundScale;
         this.angleX = angleX;
-        float radiansX = angleX * (float)Math.PI / 180.0f;
-        float x = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radiansX));
         this.angleZ = angleZ;
-
-        float radiansZ = angleZ * (float)Math.PI / 180.0f;
-        float z = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radiansZ));
-        float y = (float) ((RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansX))-
-                (RaceGame.groundPosition.y  + RaceGame.groundScale * Math.cos(radiansZ)));
-
-        modelPosition = new Point3D(x, y, z);
-
     }
 
     public Point3D getPosition()
@@ -54,23 +46,16 @@ public class Tree {
     public void update(float rawDeltaTime, float speed)
     {
         angleZ += speed*rawDeltaTime;
-
-        float radiansX = angleX * (float)Math.PI / 180.0f;
-        float radiansZ = angleZ * (float)Math.PI / 180.0f;
-        float z = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radiansZ));
-        float y = (float) ((RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansX))-
-                            (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansZ)));
-        modelPosition.z = z;
-        modelPosition.y = y;
     }
 
     public void display()
     {
         ModelMatrix.main.loadIdentityMatrix();
         ModelMatrix.main.pushMatrix();
+        ModelMatrix.main.addTranslationBaseCoords(groundCenter.x,groundCenter.y,groundCenter.z);
         ModelMatrix.main.addRotationZ(angleX);
         ModelMatrix.main.addRotationX(-angleZ);
-        ModelMatrix.main.addTranslation(modelPosition.x, modelPosition.y, modelPosition.z);
+        ModelMatrix.main.addTranslation(0f, groundRadius-0.5f, 0f);
         shader.setModelMatrix(ModelMatrix.main.getMatrix());
         palmTree.draw(shader);
         ModelMatrix.main.popMatrix();

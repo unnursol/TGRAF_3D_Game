@@ -16,27 +16,23 @@ public class Coin {
     private Vector3D vec3D;
     private float angleX = 0;
     private float angleZ = 0;
+    private float angleY = 0;
+    private float selfRotationSpeed = 200;
 
     private MeshModel model;
 
     private Point3D groundCenter;
+    private float groundRadius;
 
     public Coin(Shader shader, float angleX, float angleZ)
     {
         this.shader = shader;
         model = G3DJModelLoader.loadG3DJFromFile("coin.g3dj");
 
+        this.groundCenter = RaceGame.groundPosition;
+        this.groundRadius = RaceGame.groundScale;
         this.angleX = angleX;
-        float radiansX = angleX * (float)Math.PI / 180.0f;
-        float x = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radiansX));
         this.angleZ = angleZ;
-
-        float radiansZ = angleZ * (float)Math.PI / 180.0f;
-        float z = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radiansZ));
-        float y = (float) ((RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansX))-
-                (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansZ)));
-
-        modelPosition = new Point3D(x, y, z);
 
     }
 
@@ -48,25 +44,19 @@ public class Coin {
     public void update(float rawDeltaTime, float speed)
     {
         angleZ += speed*rawDeltaTime;
-
-        float radiansX = angleX * (float)Math.PI / 180.0f;
-        float radiansZ = angleZ * (float)Math.PI / 180.0f;
-        float z = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radiansZ));
-        float y = (float) ((RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansX))-
-                (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansZ)));
-        modelPosition.z = z;
-        modelPosition.y = y;
+        angleY += selfRotationSpeed*rawDeltaTime;
     }
 
     public void display()
     {
         ModelMatrix.main.loadIdentityMatrix();
         ModelMatrix.main.pushMatrix();
+        ModelMatrix.main.addTranslationBaseCoords(groundCenter.x,groundCenter.y,groundCenter.z);
         ModelMatrix.main.addRotationZ(angleX);
         ModelMatrix.main.addRotationX(-angleZ);
+        ModelMatrix.main.addTranslation(0f, groundRadius-0.5f, 0f);
         ModelMatrix.main.addScale(0.5f,0.5f,0.5f);
-        ModelMatrix.main.addTranslation(modelPosition.x, modelPosition.y, modelPosition.z);
-
+        ModelMatrix.main.addRotationY(angleY);
         shader.setModelMatrix(ModelMatrix.main.getMatrix());
         model.draw(shader);
         ModelMatrix.main.popMatrix();
