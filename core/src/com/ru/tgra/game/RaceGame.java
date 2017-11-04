@@ -63,7 +63,7 @@ public class RaceGame extends ApplicationAdapter {
 	private float acceleration = 0f;
 	private float objSpeed = 0f;
 	Music music;
-	private static float[] lane = new float[]{ -16, -8, 0, 8, 16, 24 };
+	private static float[] lane = new float[]{ -16, -8, 0, 8, 16 };
 	private float zDistance = 0f;
 	private float zInterval = 15f;
 	
@@ -123,6 +123,7 @@ public class RaceGame extends ApplicationAdapter {
 		orthoCam = new Camera();
 		//orthoCam.orthographicProjection(-5, 5, -5, 5, 3.0f, 100);
 		orthoCam.perspectiveProjection(100.0f, 1, 3, 100);
+		orthoCam.look(new Point3D(0f, 10.0f, 0f), new Point3D(0f, 0f, 0f), new Vector3D(0,0,1));
 
 		//TODO: try this way to create a texture image
 		/*Pixmap pm = new Pixmap(128, 128, Format.RGBA8888);
@@ -312,7 +313,6 @@ public class RaceGame extends ApplicationAdapter {
 				int miniMapWidth = 250;
 				Gdx.gl.glViewport((Gdx.graphics.getWidth() - miniMapWidth), Gdx.graphics.getHeight() - miniMapHeight, miniMapWidth, miniMapHeight);
 				Point3D camTrace = new Point3D(cam.eye.x, cam.eye.y, cam.eye.z);
-				orthoCam.look(new Point3D(camTrace.x, 10.0f, camTrace.z), camTrace, new Vector3D(0,0,-1));
 				shader.setViewMatrix(orthoCam.getViewMatrix());
 				shader.setProjectionMatrix(orthoCam.getProjectionMatrix());
 
