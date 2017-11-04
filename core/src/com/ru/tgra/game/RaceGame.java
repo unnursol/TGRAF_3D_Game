@@ -58,7 +58,10 @@ public class RaceGame extends ApplicationAdapter {
 	private ArrayList<Heart> hearts;
 
 	// Game settings
-	private float objSpeed = 22;
+	private float maxspeed = 1f;
+	private float maxAccelration = 0.2f;
+	private float acceleration = 0f;
+	private float objSpeed = 0f;
 	Music music;
 
 	@Override
@@ -132,21 +135,38 @@ public class RaceGame extends ApplicationAdapter {
 		menu = new Menu();
 	}
 
+	private void crash(){
+		objSpeed = 0f;
+		acceleration = 0f;
+	}
+
 	
 	private void update()
 	{
 		float deltaTime = Gdx.graphics.getDeltaTime();
+		if(acceleration < maxAccelration){
+			acceleration += deltaTime * 0.1f;
+			if(acceleration > maxAccelration){
+				acceleration = maxAccelration;
+			}
+		}
+		if(objSpeed < maxspeed){
+			objSpeed += acceleration * deltaTime;
+			if(objSpeed > maxspeed){
+				objSpeed = maxspeed;
+			}
+		}
 
 		// While playing the game
 		if(!mainMenu && !gameOverMenu) {
 			playerCar.update(deltaTime);
-			ground.update(deltaTime, objSpeed);
+			ground.update(objSpeed);
 
 			for(Tree tree : trees) {
-				tree.update(deltaTime, objSpeed);
+				tree.update(objSpeed);
 			}
 			for(Crystal crystal : crystals) {
-				crystal.update(deltaTime, objSpeed);
+				crystal.update(objSpeed);
 			}
 			for(Coin coin : coins) {
 				coin.update(deltaTime, objSpeed);

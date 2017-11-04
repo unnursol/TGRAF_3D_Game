@@ -43,9 +43,9 @@ public class Tree {
         return modelPosition;
     }
 
-    public void update(float rawDeltaTime, float speed)
+    public void update(float speed)
     {
-        angleZ += speed*rawDeltaTime;
+        angleZ += speed;
     }
 
     public void display()

@@ -43,7 +43,7 @@ public class Coin {
 
     public void update(float rawDeltaTime, float speed)
     {
-        angleZ += speed*rawDeltaTime;
+        angleZ += speed;
         angleY += selfRotationSpeed*rawDeltaTime;
     }
 

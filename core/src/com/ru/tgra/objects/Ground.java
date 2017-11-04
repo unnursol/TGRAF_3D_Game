@@ -33,8 +33,8 @@ public class Ground {
         return scale;
     }
 
-    public void update(float deltatime, float speed){
-        angleX -= speed * deltatime;
+    public void update(float speed){
+        angleX -= speed;
     }
 
     public void display() {
