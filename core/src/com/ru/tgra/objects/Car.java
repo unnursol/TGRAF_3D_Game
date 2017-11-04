@@ -19,8 +19,11 @@ public class Car
 
     private Point3D modelPosition;
     private Vector3D vec3D;
-    private float angle = 0f;
-    private float destinationAngle = 0f;
+    private float angleX = 0f;
+    private float destAngleX = 0f;
+    private float angleZ = 0f;
+    private float destAngleZ = 0f;
+    private float maxAngleZ = 45f;
     private float turnSpeed = 30f;
 
     private MeshModel model;
@@ -43,19 +46,33 @@ public class Car
     public void update(float rawDeltaTime)
     {
         if(Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-            destinationAngle = destinationAngle <= -16 ? destinationAngle : destinationAngle - 8;
+            destAngleX = destAngleX <= -16 ? destAngleX : destAngleX - 8;
         } else if(Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            destinationAngle = destinationAngle >= 16 ? destinationAngle : destinationAngle + 8;
+            destAngleX = destAngleX >= 16 ? destAngleX : destAngleX + 8;
         }
-        if(angle < destinationAngle){
-            angle += rawDeltaTime * turnSpeed;
-            if(angle > destinationAngle){
-                angle = destinationAngle;
+        if(angleX < destAngleX){
+            angleX += rawDeltaTime * turnSpeed;
+            if(angleX > destAngleX){
+                angleX = destAngleX;
+                angleZ = 0;
+            } else {
+                destAngleZ = -(Math.abs(destAngleX - angleX) / 8) * maxAngleZ;
+                angleZ -= rawDeltaTime * turnSpeed * 3;
+                if (angleZ < destAngleZ) {
+                    angleZ = destAngleZ;
+                }
             }
-        } else if(angle > destinationAngle){
-            angle -= rawDeltaTime * turnSpeed;
-            if(angle < destinationAngle){
-                angle = destinationAngle;
+        } else if(angleX > destAngleX){
+            angleX -= rawDeltaTime * turnSpeed;
+            if(angleX < destAngleX){
+                angleX = destAngleX;
+                angleZ = 0;
+            } else {
+                destAngleZ = (Math.abs(destAngleX - angleX)/8) * maxAngleZ;
+                angleZ += rawDeltaTime * turnSpeed*3;
+                if(angleZ > destAngleZ){
+                    angleZ = destAngleZ;
+                }
             }
         }
     }
@@ -65,14 +82,15 @@ public class Car
         ModelMatrix.main.loadIdentityMatrix();
         ModelMatrix.main.pushMatrix();
         ModelMatrix.main.addTranslationBaseCoords(0f, -20f, 0f);
-        ModelMatrix.main.addRotationZ(angle);
+        ModelMatrix.main.addRotationZ(angleX);
         ModelMatrix.main.addTranslation(0f, 20.27f, 0f);
+        ModelMatrix.main.addRotationY(angleZ);
         shader.setModelMatrix(ModelMatrix.main.getMatrix());
         model.draw(shader);
         ModelMatrix.main.popMatrix();
     }
 
     public float getLane() {
-        return angle;
+        return angleX;
     }
 }
