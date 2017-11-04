@@ -9,15 +9,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.ru.tgra.models.*;
 import com.ru.tgra.objects.*;
 import com.ru.tgra.shapes.*;
 import com.ru.tgra.utilities.RandomGenerator;
-
-import static java.lang.System.in;
 
 public class RaceGame extends ApplicationAdapter {
 
@@ -63,14 +60,16 @@ public class RaceGame extends ApplicationAdapter {
 	private float maxAccelration = 0.2f;
 	private float acceleration = 0f;
 	private float objSpeed = 0f;
+	private float objStartPosition = -90f;
+	private float objEndPosition = 50f;
 	Music music;
+
 	private static float[] lanes = new float[]{ -16, -8, 0, 8, 16 };
 	private float zDistance = 0f;
 	private float zInterval = 15f;
-	
 
-	private static float rightSide = -24;
-	private static float leftSide = 24;
+	private static float rightSide = 24;
+	private static float leftSide = -24;
 
 
 	@Override
@@ -177,23 +176,33 @@ public class RaceGame extends ApplicationAdapter {
 			playerCar.update(deltaTime);
 			ground.update(objSpeed);
 
-			for(Tree tree : trees) {
-				tree.update(objSpeed);
-			}
-			for(Crystal crystal : crystals) {
-				crystal.update(objSpeed);
-			}
-
-			Coin removedCoin = null;
-			for(Coin coin : coins) {
-				coin.update(deltaTime, objSpeed);
-				if(sameLane(coin.getLane()) && coin.collidingWithPlayer()) {
-					removedCoin = coin;
-					score += 10;
+			for(int i = 0; i < trees.size(); i++) {
+				trees.get(i).update(objSpeed);
+				if(trees.get(i).isOutOfBounce()) {
+					trees.remove(i);
 				}
 			}
-			if(removedCoin != null) {
-				coins.remove(removedCoin);
+
+			for(int i = 0; i < crystals.size(); i++) {
+				crystals.get(i).update(objSpeed);
+				if(sameLane(crystals.get(i).getLane()) && crystals.get(i).collidingWithPlayer()) {
+					crystals.remove(i);
+					score += 50;
+				}
+				else if(crystals.get(i).isOutOfBounce()) {
+					crystals.remove(i);
+				}
+			}
+
+			for(int i = 0; i < coins.size(); i++) {
+				coins.get(i).update(deltaTime, objSpeed);
+				if(sameLane(coins.get(i).getLane()) && coins.get(i).collidingWithPlayer()) {
+					coins.remove(i);
+					score += 10;
+				}
+				else if(coins.get(i).isOutOfBounce()) {
+					coins.remove(i);
+				}
 			}
 
 			for(Heart heart : hearts) {
@@ -272,12 +281,41 @@ public class RaceGame extends ApplicationAdapter {
 			return;
 		}
 		zDistance = 0f;
+		int numberOfSpawns = RandomGenerator.randomIntegerInRange(1,3);
+		for(int i = 0; i < numberOfSpawns; i++)
+		{
+			int laneNr = RandomGenerator.randomIntegerInRange(0,4);
+			float p = RandomGenerator.randomFloatInRange(0,1);
+			if(p > 0f && p < 0.3f) {
+				Coin newCoin = new Coin(shader, lanes[laneNr], objStartPosition);
+				coins.add(newCoin);
+			}
+			else if(p > 0.3f && p < 0.4f) {
+				Crystal newCrystal = new Crystal(shader, lanes[laneNr], objStartPosition);
+				crystals.add(newCrystal);
+			}
+			else if(p > 0.4f && p < 0.8) {
 
-		int laneNr = RandomGenerator.randomIntegerInRange(0,4);
-		float p = RandomGenerator.randomFloatInRange(0,1);
+			}
+			else if(p > 0.8 && p < 1) {
 
-		Coin newCoin = new Coin(shader, lanes[laneNr], -30);
-		coins.add(newCoin);
+			}
+		}
+
+		if(score > 1000) {
+			Tree rightTree = new Tree(shader, rightSide, objStartPosition, 1);
+			Tree leftTree = new Tree(shader, leftSide, objStartPosition, 1);
+
+			trees.add(rightTree);
+			trees.add(leftTree);
+		}
+		else {
+			Tree rightTree = new Tree(shader, rightSide, objStartPosition, 0);
+			Tree leftTree = new Tree(shader, leftSide, objStartPosition, 0);
+
+			trees.add(rightTree);
+			trees.add(leftTree);
+		}
 	}
 
 	private boolean sameLane(float lane) {
@@ -311,9 +349,9 @@ public class RaceGame extends ApplicationAdapter {
 				shader.setViewMatrix(cam.getViewMatrix());
 				shader.setProjectionMatrix(cam.getProjectionMatrix());
 				shader.setLightPosition(cam.eye.x,cam.eye.y,cam.eye.z,1f);
-				System.out.println("FIRST PARAMETER: " + cam.eye.x + ", " + cam.eye.y + ", " + cam.eye.z);
-				System.out.println("n (differnce(eye, center)): " + cam.n.x + ", " + cam.n.y + ", " + cam.n.z );
-				System.out.println("u (upp.cross(n)): " + cam.u.x + ", " + cam.u.y + ", " + cam.u.z );
+//				System.out.println("FIRST PARAMETER: " + cam.eye.x + ", " + cam.eye.y + ", " + cam.eye.z);
+//				System.out.println("n (differnce(eye, center)): " + cam.n.x + ", " + cam.n.y + ", " + cam.n.z );
+//				System.out.println("u (upp.cross(n)): " + cam.u.x + ", " + cam.u.y + ", " + cam.u.z );
 			}
 			else
 			{

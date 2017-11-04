@@ -57,4 +57,10 @@ public class Object {
             return true;
         return false;
     }
+
+    public boolean isOutOfBounce() {
+        if(angleZ >= 50)
+            return true;
+        return false;
+    }
 }
