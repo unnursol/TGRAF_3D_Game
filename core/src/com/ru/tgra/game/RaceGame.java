@@ -149,10 +149,7 @@ public class RaceGame extends ApplicationAdapter {
 		acceleration = 0f;
 	}
 
-	
-	private void update()
-	{
-		float deltaTime = Gdx.graphics.getDeltaTime();
+	private void updateSpeed(float deltaTime){
 		if(acceleration < maxAccelration){
 			acceleration += deltaTime * 0.1f;
 			if(acceleration > maxAccelration){
@@ -165,14 +162,16 @@ public class RaceGame extends ApplicationAdapter {
 				objSpeed = maxspeed;
 			}
 		}
-		zDistance += objSpeed;
-		if(zDistance > zInterval){
-			zDistance = 0f;
-			spawnObjects();
-		}
+	}
+
+	
+	private void update()
+	{
+		float deltaTime = Gdx.graphics.getDeltaTime();
 
 		// While playing the game
 		if(!mainMenu && !gameOverMenu) {
+			updateSpeed(deltaTime);
 			spawnObjects();
 			playerCar.update(deltaTime);
 			ground.update(objSpeed);
@@ -269,7 +268,10 @@ public class RaceGame extends ApplicationAdapter {
 	}
 
 	private void spawnObjects() {
-
+		zDistance += objSpeed;
+		if(zDistance > zInterval){
+			zDistance = 0f;
+		}
 	}
 
 	private boolean sameLane(float lane) {
