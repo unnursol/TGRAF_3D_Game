@@ -34,7 +34,7 @@ public class RaceGame extends ApplicationAdapter {
 	private Camera cam;
 	private Camera orthoCam;
 	
-	private float fov = 90.0f;
+	private float fov = 60.0f;
 
 	Car playerCar;
 
@@ -398,66 +398,5 @@ public class RaceGame extends ApplicationAdapter {
 		update();
 		display();
 
-	}
-
-	private void drawPyramids()
-	{
-		int maxLevel = 9;
-
-		for(int pyramidNr = 0; pyramidNr < 2; pyramidNr++)
-		{
-			ModelMatrix.main.pushMatrix();
-			if(pyramidNr == 0)
-			{
-				shader.setMaterialDiffuse(0.8f, 0.8f, 0.2f, 1.0f);
-				shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
-				shader.setShininess(150.0f);
-				shader.setMaterialEmission(0, 0, 0, 1);
-				ModelMatrix.main.addTranslation(0.0f, 0.0f, -7.0f);
-			}
-			else
-			{
-				shader.setMaterialDiffuse(0.5f, 0.3f, 1.0f, 1.0f);
-				shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
-				shader.setShininess(150.0f);
-				shader.setMaterialEmission(0, 0, 0, 1);
-				ModelMatrix.main.addTranslation(0.0f, 0.0f, 7.0f);
-			}
-			ModelMatrix.main.pushMatrix();
-			for(int level = 0; level < maxLevel; level++)
-			{
-	
-				ModelMatrix.main.addTranslation(0.55f, 1.0f, -0.55f);
-	
-				ModelMatrix.main.pushMatrix();
-				for(int i = 0; i < maxLevel-level; i++)
-				{
-					ModelMatrix.main.addTranslation(1.1f, 0, 0);
-					ModelMatrix.main.pushMatrix();
-					for(int j = 0; j < maxLevel-level; j++)
-					{
-						ModelMatrix.main.addTranslation(0, 0, -1.1f);
-						ModelMatrix.main.pushMatrix();
-						if(i % 2 == 0)
-						{
-							ModelMatrix.main.addScale(0.2f, 1, 1);
-						}
-						else
-						{
-							ModelMatrix.main.addScale(1, 1, 0.2f);
-						}
-						shader.setModelMatrix(ModelMatrix.main.getMatrix());
-
-						BoxGraphic.drawSolidCube(shader, null);
-						//BoxGraphic.drawSolidCube(shader, tex);
-						ModelMatrix.main.popMatrix();
-					}
-					ModelMatrix.main.popMatrix();
-				}
-				ModelMatrix.main.popMatrix();
-			}
-			ModelMatrix.main.popMatrix();
-			ModelMatrix.main.popMatrix();
-		}
 	}
 }

@@ -19,7 +19,9 @@ public class Car
 
     private Point3D modelPosition;
     private Vector3D vec3D;
-    private float angle = 0;
+    private float angle = 0f;
+    private float destinationAngle = 0f;
+    private float turnSpeed = 30f;
 
     private MeshModel model;
 
@@ -40,23 +42,21 @@ public class Car
 
     public void update(float rawDeltaTime)
     {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.O) && modelPosition.x <= 3)
-        {
-            angle -= 8;
-            float radians = angle * (float)Math.PI / 180.0f;
-            float x = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radians));
-            float y = (float) (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radians));
-            modelPosition.y = y;
-            modelPosition.x = x;
+        if(Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+            destinationAngle = destinationAngle <= -16 ? destinationAngle : destinationAngle - 8;
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            destinationAngle = destinationAngle >= 16 ? destinationAngle : destinationAngle + 8;
         }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.P) && modelPosition.x >= -3)
-        {
-            angle += 8;
-            float radians = angle * (float)Math.PI / 180.0f;
-            float x = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radians));
-            float y = (float) (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radians));
-            modelPosition.y = y;
-            modelPosition.x = x;
+        if(angle < destinationAngle){
+            angle += rawDeltaTime * turnSpeed;
+            if(angle > destinationAngle){
+                angle = destinationAngle;
+            }
+        } else if(angle > destinationAngle){
+            angle -= rawDeltaTime * turnSpeed;
+            if(angle < destinationAngle){
+                angle = destinationAngle;
+            }
         }
     }
 
@@ -64,8 +64,9 @@ public class Car
     {
         ModelMatrix.main.loadIdentityMatrix();
         ModelMatrix.main.pushMatrix();
-        ModelMatrix.main.addTranslation(modelPosition.x, modelPosition.y+0.27f, modelPosition.z);
+        ModelMatrix.main.addTranslationBaseCoords(0f, -20f, 0f);
         ModelMatrix.main.addRotationZ(angle);
+        ModelMatrix.main.addTranslation(0f, 20.27f, 0f);
         shader.setModelMatrix(ModelMatrix.main.getMatrix());
         model.draw(shader);
         ModelMatrix.main.popMatrix();
