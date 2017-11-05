@@ -33,15 +33,15 @@ public class Object {
         angleZ += speed;
     }
 
-    public void display()
+    public void display(float height, float scale)
     {
         ModelMatrix.main.loadIdentityMatrix();
         ModelMatrix.main.pushMatrix();
         ModelMatrix.main.addTranslationBaseCoords(groundCenter.x,groundCenter.y,groundCenter.z);
         ModelMatrix.main.addRotationZ(angleX);
         ModelMatrix.main.addRotationX(-angleZ);
-        ModelMatrix.main.addTranslation(0f, groundRadius-0.5f, 0f);
-        ModelMatrix.main.addScale(0.5f,0.5f,0.5f);
+        ModelMatrix.main.addTranslation(0f, groundRadius+height, 0f);
+        ModelMatrix.main.addScale(scale,scale,scale);
         ModelMatrix.main.addRotationY(angleY);
         shader.setModelMatrix(ModelMatrix.main.getMatrix());
         model.draw(shader);

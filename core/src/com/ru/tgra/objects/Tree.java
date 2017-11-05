@@ -9,6 +9,8 @@ import com.ru.tgra.shapes.g3djmodel.G3DJModelLoader;
 import com.ru.tgra.shapes.g3djmodel.MeshModel;
 
 public class Tree extends Object{
+    private float scale = 1f;
+    private float height = -0.5f;
 
     public Tree(Shader shader, float angleX, float angleZ, int tree) {
         super(shader, angleX, angleZ);
@@ -18,4 +20,8 @@ public class Tree extends Object{
             model = G3DJModelLoader.loadG3DJFromFile("Oak_Tree.g3dj");
         }
     }
+    public void display(){
+        super.display(height, scale);
+    }
+
 }

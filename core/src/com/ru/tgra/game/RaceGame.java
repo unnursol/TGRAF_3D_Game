@@ -14,6 +14,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.ru.tgra.models.*;
 import com.ru.tgra.objects.*;
 import com.ru.tgra.shapes.*;
+import com.ru.tgra.shapes.g3djmodel.G3DJModelLoader;
+import com.ru.tgra.shapes.g3djmodel.MeshModel;
 import com.ru.tgra.utilities.RandomGenerator;
 
 public class RaceGame extends ApplicationAdapter {
@@ -31,6 +33,7 @@ public class RaceGame extends ApplicationAdapter {
 	// Cameras
 	private Camera cam;
 	private Camera orthoCam;
+	private Camera lifeCam;
 	
 	private float fov = 70.0f;
 
@@ -56,12 +59,13 @@ public class RaceGame extends ApplicationAdapter {
 	private ArrayList<Heart> hearts;
 
 	// Game settings
-	private float maxspeed = 1f;
+	private float maxspeed = 0.8f;
 	private float maxAccelration = 0.2f;
 	private float acceleration = 0f;
 	private float objSpeed = 0f;
 	private float objStartPosition = -90f;
-	private float objEndPosition = 50f;
+	private float objEndPosition = 90f;
+
 	Music music;
 
 	private static float[] lanes = new float[]{ -16, -8, 0, 8, 16 };
@@ -70,6 +74,10 @@ public class RaceGame extends ApplicationAdapter {
 
 	private static float rightSide = 24;
 	private static float leftSide = -24;
+
+	private int maxLife = 3;
+	private int life = maxLife;
+	private MeshModel lifeHeartModel;
 
 
 	@Override
@@ -121,26 +129,18 @@ public class RaceGame extends ApplicationAdapter {
 		cam.look(new Point3D(0f, 6f, -2f), new Point3D(0,0f,3f), new Vector3D(0,1,0));
 
 		orthoCam = new Camera();
-		//orthoCam.orthographicProjection(-5, 5, -5, 5, 3.0f, 100);
 		orthoCam.perspectiveProjection(100.0f, 1, 3, 100);
 		orthoCam.look(new Point3D(0f, 10.0f, 0f), new Point3D(0f, 0f, 0f), new Vector3D(0,0,1));
 
-		//TODO: try this way to create a texture image
-		/*Pixmap pm = new Pixmap(128, 128, Format.RGBA8888);
-		for(int i = 0; i < pm.getWidth(); i++)
-		{
-			for(int j = 0; j < pm.getWidth(); j++)
-			{
-				pm.drawPixel(i, j, rand.nextInt());
-			}
-		}
-		tex = new Texture(pm);*/
+		lifeCam = new Camera();
+		lifeCam.orthographicProjection(-83.3f,83.3f,-25.0f,25.0f,1.0f, 100.0f);
 
 		music = Gdx.audio.newMusic(Gdx.files.internal("audio/song1.mp3"));
 		music.play();
 
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
+		lifeHeartModel = G3DJModelLoader.loadG3DJFromFile("heart.g3dj");
 		menu = new Menu();
 	}
 
@@ -164,7 +164,6 @@ public class RaceGame extends ApplicationAdapter {
 		}
 	}
 
-	
 	private void update()
 	{
 		float deltaTime = Gdx.graphics.getDeltaTime();
@@ -204,6 +203,20 @@ public class RaceGame extends ApplicationAdapter {
 					coins.remove(i);
 				}
 			}
+
+
+			for(int i = 0; i < hearts.size(); i++) {
+				hearts.get(i).update(deltaTime, objSpeed);
+				if(sameLane(hearts.get(i).getLane()) && hearts.get(i).collidingWithPlayer()) {
+					hearts.remove(i);
+					if(life < maxLife)
+						life += 1;
+				}
+				else if(hearts.get(i).isOutOfBounce()) {
+					hearts.remove(i);
+				}
+			}
+
 
 			for(Heart heart : hearts) {
 				heart.update(deltaTime, objSpeed);
@@ -281,24 +294,32 @@ public class RaceGame extends ApplicationAdapter {
 			return;
 		}
 		zDistance = 0f;
-		int numberOfSpawns = RandomGenerator.randomIntegerInRange(1,3);
+		int numberOfSpawns = RandomGenerator.randomIntegerInRange(0,3);
+		int[] positions = new int[numberOfSpawns];
 		for(int i = 0; i < numberOfSpawns; i++)
 		{
-			int laneNr = RandomGenerator.randomIntegerInRange(0,4);
-			float p = RandomGenerator.randomFloatInRange(0,1);
-			if(p > 0f && p < 0.3f) {
-				Coin newCoin = new Coin(shader, lanes[laneNr], objStartPosition);
-				coins.add(newCoin);
-			}
-			else if(p > 0.3f && p < 0.4f) {
-				Crystal newCrystal = new Crystal(shader, lanes[laneNr], objStartPosition);
-				crystals.add(newCrystal);
-			}
-			else if(p > 0.4f && p < 0.8) {
+			while(true)
+			{
+				int laneNr = RandomGenerator.randomIntegerInRange(0,4);
+				if(!doublePosition(positions, laneNr)) {
+					positions[i] = laneNr;
+					float p = RandomGenerator.randomFloatInRange(0,1);
+					if(p > 0f && p < 0.3f) {
+						Coin newCoin = new Coin(shader, lanes[laneNr], objStartPosition);
+						coins.add(newCoin);
+					}
+					else if(p > 0.3f && p < 0.4f) {
+						Crystal newCrystal = new Crystal(shader, lanes[laneNr], objStartPosition);
+						crystals.add(newCrystal);
+					}
+					else if(p > 0.4f && p < 0.8) {
 
-			}
-			else if(p > 0.8 && p < 1) {
+					}
+					else if(p > 0.8 && p < 1) {
 
+					}
+					break;
+				}
 			}
 		}
 
@@ -318,6 +339,15 @@ public class RaceGame extends ApplicationAdapter {
 		}
 	}
 
+	private boolean doublePosition(int[] positions, int pos){
+		for(int position : positions) {
+			if(position == pos) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private boolean sameLane(float lane) {
 		if(lane == playerCar.getLane()) {
 			return true;
@@ -329,17 +359,10 @@ public class RaceGame extends ApplicationAdapter {
 
 	private void display()
 	{
-		//do all actual drawing and rendering here
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-		//Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
-/*
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		//Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE);
-		//Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
-*/
+
 		for(int viewNum = 0; viewNum < 2; viewNum++)
 		{
 			if(viewNum == 0)
@@ -349,9 +372,6 @@ public class RaceGame extends ApplicationAdapter {
 				shader.setViewMatrix(cam.getViewMatrix());
 				shader.setProjectionMatrix(cam.getProjectionMatrix());
 				shader.setLightPosition(cam.eye.x,cam.eye.y,cam.eye.z,1f);
-//				System.out.println("FIRST PARAMETER: " + cam.eye.x + ", " + cam.eye.y + ", " + cam.eye.z);
-//				System.out.println("n (differnce(eye, center)): " + cam.n.x + ", " + cam.n.y + ", " + cam.n.z );
-//				System.out.println("u (upp.cross(n)): " + cam.u.x + ", " + cam.u.y + ", " + cam.u.z );
 			}
 			else
 			{
@@ -371,8 +391,6 @@ public class RaceGame extends ApplicationAdapter {
 			float c = (float)Math.cos((angle / 2.0) * Math.PI / 180.0);
 
 			shader.setLightPosition(0.0f + c * 3.0f, 5.0f, 0.0f + s * 3.0f, 1.0f);
-			//shader.setLightPosition(3.0f, 4.0f, 0.0f, 1.0f);
-			//shader.setLightPosition(cam.eye.x, cam.eye.y, cam.eye.z, 1.0f);
 
 			float s2 = Math.abs((float)Math.sin((angle / 1.312) * Math.PI / 180.0));
 			float c2 = Math.abs((float)Math.cos((angle / 1.312) * Math.PI / 180.0));
@@ -386,7 +404,7 @@ public class RaceGame extends ApplicationAdapter {
 
 			//shader.setLightColor(s2, 0.4f, c2, 1.0f);
 			shader.setLightColor(1.0f, 1.0f, 1.0f, 1.0f);
-			
+
 			shader.setGlobalAmbient(0.3f, 0.3f, 0.3f, 1);
 
 			shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
@@ -416,7 +434,7 @@ public class RaceGame extends ApplicationAdapter {
 			}
 
 			for(Heart heart : hearts) {
-				//heart.display();
+				heart.display();
 			}
 
 			if( viewNum == 0)
@@ -435,6 +453,8 @@ public class RaceGame extends ApplicationAdapter {
 				}
 			}
 		}
+
+		displayLife();
 	}
 
 	@Override
@@ -443,4 +463,39 @@ public class RaceGame extends ApplicationAdapter {
 		display();
 
 	}
+
+	public void displayLife() {
+
+		int lifeHeight = 150;
+		int lifeWidth = 500;
+
+		Gdx.gl.glViewport((Gdx.graphics.getWidth()/2)-lifeWidth/2, Gdx.graphics.getHeight() - lifeHeight, lifeWidth, lifeHeight);
+
+		lifeCam.look(new Point3D(0,40,0), new Point3D(0,1,0), new Vector3D(0,0,-1));
+		shader.setViewMatrix(lifeCam.getViewMatrix());
+		shader.setProjectionMatrix(lifeCam.getProjectionMatrix());
+
+		shader.setLightPosition(10,40f,10,1f);
+
+		float x = -25f;
+		int z = -8;
+		float heartWidth = 25f;
+
+		// Drawing life hearts
+		for(int i = 0; i < life; i++) {
+			ModelMatrix.main.loadIdentityMatrix();
+			ModelMatrix.main.pushMatrix();
+			ModelMatrix.main.addTranslation(x,1f,z);
+			ModelMatrix.main.addRotationZ(90);
+			ModelMatrix.main.addRotationX(-90);
+			ModelMatrix.main.addScale(5f, 5f,5f);
+			shader.setModelMatrix(ModelMatrix.main.getMatrix());
+			lifeHeartModel.draw(shader);
+			ModelMatrix.main.popMatrix();
+
+			x += heartWidth;
+
+		}
+	}
+
 }

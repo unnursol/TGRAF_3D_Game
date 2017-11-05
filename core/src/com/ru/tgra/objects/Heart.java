@@ -7,66 +7,29 @@ import com.ru.tgra.models.Shader;
 import com.ru.tgra.models.Vector3D;
 import com.ru.tgra.shapes.g3djmodel.G3DJModelLoader;
 import com.ru.tgra.shapes.g3djmodel.MeshModel;
+import com.ru.tgra.utilities.RandomGenerator;
 
-public class Heart {
+public class Heart extends Object{
 
-    private Shader shader;
+    private float selfRotationSpeed = 200;
+    private float height = 0.5f;
+    private float scale = 0.2f;
 
-    private Point3D modelPosition;
-    private Vector3D vec3D;
-    private float angleX = 0;
-    private float angleZ = 0;
-
-    private MeshModel model;
-
-    private Point3D groundCenter;
 
     public Heart(Shader shader, float angleX, float angleZ)
     {
-        this.shader = shader;
+        super(shader, angleX, angleZ);
+        angleY = RandomGenerator.randomIntegerInRange(0,180);
         model = G3DJModelLoader.loadG3DJFromFile("heart.g3dj");
-
-        this.angleX = angleX;
-        float radiansX = angleX * (float)Math.PI / 180.0f;
-        float x = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radiansX));
-        this.angleZ = angleZ;
-
-        float radiansZ = angleZ * (float)Math.PI / 180.0f;
-        float z = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radiansZ));
-        float y = (float) ((RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansX))-
-                (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansZ)));
-
-        modelPosition = new Point3D(x, y, z);
-
-    }
-
-    public Point3D getPosition()
-    {
-        return modelPosition;
     }
 
     public void update(float rawDeltaTime, float speed)
     {
-        angleZ += speed*rawDeltaTime;
-
-        float radiansX = angleX * (float)Math.PI / 180.0f;
-        float radiansZ = angleZ * (float)Math.PI / 180.0f;
-        float z = -(float) (RaceGame.groundPosition.x + RaceGame.groundScale * Math.sin(radiansZ));
-        float y = (float) ((RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansX))-
-                (RaceGame.groundPosition.y + RaceGame.groundScale * Math.cos(radiansZ)));
-        modelPosition.z = z;
-        modelPosition.y = y;
+        super.update(speed);
+        angleY += selfRotationSpeed * rawDeltaTime;
     }
 
-    public void display()
-    {
-        ModelMatrix.main.loadIdentityMatrix();
-        ModelMatrix.main.pushMatrix();
-        ModelMatrix.main.addRotationZ(angleX);
-        ModelMatrix.main.addRotationX(-angleZ);
-        ModelMatrix.main.addTranslation(modelPosition.x, modelPosition.y, modelPosition.z);
-        shader.setModelMatrix(ModelMatrix.main.getMatrix());
-        model.draw(shader);
-        ModelMatrix.main.popMatrix();
+    public void display() {
+        super.display(height, scale);
     }
 }

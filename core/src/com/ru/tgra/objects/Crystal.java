@@ -9,9 +9,14 @@ import com.ru.tgra.shapes.g3djmodel.G3DJModelLoader;
 import com.ru.tgra.shapes.g3djmodel.MeshModel;
 
 public class Crystal extends Object {
+    private float scale = 1f;
+    private float height = -0.5f;
 
     public Crystal(Shader shader, float angleX, float angleZ) {
         super(shader, angleX, angleZ);
         model = G3DJModelLoader.loadG3DJFromFile("Crystal.g3dj");
+    }
+    public void display(){
+        super.display(height, scale);
     }
 }
