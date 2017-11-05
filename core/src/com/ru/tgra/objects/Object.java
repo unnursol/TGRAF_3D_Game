@@ -11,8 +11,8 @@ public class Object {
     protected MeshModel model;
 
     private Shader shader;
-    private float angleX = 0;
-    private float angleZ = 0;
+    protected float angleX = 0;
+    protected float angleZ = 0;
     protected float angleY = 0;
 
     private Point3D groundCenter;

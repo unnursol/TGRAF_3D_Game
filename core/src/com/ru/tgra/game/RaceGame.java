@@ -57,6 +57,7 @@ public class RaceGame extends ApplicationAdapter {
 	private ArrayList<Crystal> crystals;
 	private ArrayList<Coin> coins;
 	private ArrayList<Heart> hearts;
+	private ArrayList<CarObsticle> cars;
 
 	// Game settings
 	private float maxspeed = 0.8f;
@@ -106,23 +107,10 @@ public class RaceGame extends ApplicationAdapter {
 		crystals = new ArrayList<Crystal>();
 		coins = new ArrayList<Coin>();
 		hearts = new ArrayList<Heart>();
+		cars = new ArrayList<CarObsticle>();
 
 		playerCar = new Car(shader);
-		crate = new Crate(shader, 3);
 
-		Tree tree = new Tree(shader, leftSide, -10, 0);
-//		Crystal crystal1 = new Crystal(shader, 0, -20);
-//		crystals.add(crystal1);
-		Crystal crystal2 = new Crystal(shader, lanes[2], -30);
-		crystals.add(crystal2);
-
-		trees.add(tree);
-
-		Coin coin = new Coin(shader, lanes[0], -20);
-		coins.add(coin);
-
-		Heart heart = new Heart(shader, lanes[0], -5);
-		hearts.add(heart);
 
 		// Initialize cameras
 		cam = new Camera();
@@ -217,10 +205,23 @@ public class RaceGame extends ApplicationAdapter {
 				}
 			}
 
-
-			for(Heart heart : hearts) {
-				heart.update(deltaTime, objSpeed);
+			for(int i = 0; i < cars.size(); i++) {
+				cars.get(i).update();
+				if(sameLane(cars.get(i).getLane()) && cars.get(i).collidingWithPlayer()) {
+					cars.remove(i);
+					life --;
+				}
+				else if(cars.get(i).isOutOfBounce()) {
+					cars.remove(i);
+				}
+				else
+					collidingWithOtherObject(cars.get(i));
 			}
+
+			if(life <= 0) {
+				gameOverMenu = true;
+			}
+
 		}
 
 		// Quit the game
@@ -234,6 +235,13 @@ public class RaceGame extends ApplicationAdapter {
 		if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && mainMenu)
 		{
 			mainMenu = false;
+		}
+
+		// Retart the game
+		if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && gameOverMenu)
+		{
+			life = maxLife;
+			gameOverMenu = false;
 		}
 
 		// ------------ Camera god mode stuff ---------------
@@ -272,14 +280,12 @@ public class RaceGame extends ApplicationAdapter {
 		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 			cam.pitch(90.0f * deltaTime);
 		}
-
 		if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
 			cam.roll(-90.0f * deltaTime);
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.E)) {
 			cam.roll(90.0f * deltaTime);
 		}
-
 		if(Gdx.input.isKeyPressed(Input.Keys.T)) {
 			fov -= 30.0f * deltaTime;
 		}
@@ -288,14 +294,34 @@ public class RaceGame extends ApplicationAdapter {
 		}
 	}
 
+	private void collidingWithOtherObject(CarObsticle theCar) {
+		for(CarObsticle car : cars)
+		{
+			if((car != theCar) && (car.getLane() == theCar.getLane()) && theCar.collidingWithObj(car)) {
+				if (car.getSpeed() > theCar.getSpeed())
+					car.setSpeed(theCar.getSpeed());
+				else
+					theCar.setSpeed(car.getSpeed());
+			}
+		}
+
+		for(Crystal crystal : crystals)
+		{
+			if((crystal.getLane() == theCar.getLane()) && theCar.collidingWithObj(crystal)) {
+				// Beygja á næstu akrein
+			}
+
+		}
+	}
+
 	private void spawnObjects() {
 		zDistance += objSpeed;
-		if(zDistance < zInterval){
+		if(zDistance < zInterval) {
 			return;
 		}
 		zDistance = 0f;
 		int numberOfSpawns = RandomGenerator.randomIntegerInRange(0,3);
-		int[] positions = new int[numberOfSpawns];
+		int[] positions = new int[]{-1, -1, -1};
 		for(int i = 0; i < numberOfSpawns; i++)
 		{
 			while(true)
@@ -312,11 +338,18 @@ public class RaceGame extends ApplicationAdapter {
 						Crystal newCrystal = new Crystal(shader, lanes[laneNr], objStartPosition);
 						crystals.add(newCrystal);
 					}
-					else if(p > 0.4f && p < 0.8) {
+					else if(p > 0.4f && p < 0.7) {
 
 					}
-					else if(p > 0.8 && p < 1) {
-
+					else if(p > 0.7 && p < 0.95) {
+						// Random number and random speed
+						float speed = RandomGenerator.randomFloatInRange(0.3f,0.8f);
+						CarObsticle newCar = new CarObsticle(shader, lanes[laneNr], objStartPosition,speed, 0);
+						cars.add(newCar);
+					}
+					else if(p > 0.97 && p < 1) {
+						Heart newHeart = new Heart(shader, lanes[laneNr], objStartPosition);
+						hearts.add(newHeart);
 					}
 					break;
 				}
@@ -435,6 +468,10 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(Heart heart : hearts) {
 				heart.display();
+			}
+
+			for(CarObsticle car : cars) {
+				car.display();
 			}
 
 			if( viewNum == 0)
