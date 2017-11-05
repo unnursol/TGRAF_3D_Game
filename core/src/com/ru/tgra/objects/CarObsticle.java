@@ -23,8 +23,9 @@ public class CarObsticle extends Object {
         // ...
     }
     public void update() {
-        super.update(speed);
+        super.update(+speed);
     }
+    public void oppositeUpdate() { super.update(-speed); }
     public void display(){
         super.display(height, scale);
     }
@@ -41,5 +42,11 @@ public class CarObsticle extends Object {
 
     public float getSpeed() {
         return this.speed;
+    }
+
+    public boolean isOppositeOutOfBounce() {
+        if(angleZ <= -50)
+            return true;
+        return false;
     }
 }

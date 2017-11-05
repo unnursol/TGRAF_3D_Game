@@ -22,8 +22,6 @@ public class RaceGame extends ApplicationAdapter {
 
 	Shader shader;
 
-	private float angle;
-
 	// Background graphics
 	SkyBox sky;
 	Ground ground;
@@ -34,14 +32,10 @@ public class RaceGame extends ApplicationAdapter {
 	private Camera cam;
 	private Camera orthoCam;
 	private Camera lifeCam;
-	
 	private float fov = 70.0f;
 
-	Car playerCar;
-
-	private Texture tex;
-	
-	private Random rand = new Random();
+	// Lights
+	private float angle;
 
 	// Menu stuff
 	private Menu menu;
@@ -52,7 +46,7 @@ public class RaceGame extends ApplicationAdapter {
 	private int score = 0;
 
 	// Objects
-	private Crate crate;
+	Car playerCar;
 	private ArrayList<Tree> trees;
 	private ArrayList<Crystal> crystals;
 	private ArrayList<Coin> coins;
@@ -66,6 +60,11 @@ public class RaceGame extends ApplicationAdapter {
 	private float objSpeed = 0f;
 	private float objStartPosition = -90f;
 	private float objEndPosition = 90f;
+
+	private boolean crashed = false;
+	private float crashTime = maxspeed;
+	private float crashTimer = 0;
+
 
 	Music music;
 
@@ -205,18 +204,41 @@ public class RaceGame extends ApplicationAdapter {
 				}
 			}
 
-			for(int i = 0; i < cars.size(); i++) {
-				cars.get(i).update();
-				if(sameLane(cars.get(i).getLane()) && cars.get(i).collidingWithPlayer()) {
-					cars.remove(i);
-					life --;
+			if(!crashed)
+			{
+				for(int i = 0; i < cars.size(); i++) {
+					cars.get(i).update();
+					if(sameLane(cars.get(i).getLane()) && cars.get(i).collidingWithPlayer()) {
+						objSpeed = 0;
+						cars.remove(i);
+						crashed = true;
+						life --;
+					}
+					else if(cars.get(i).isOutOfBounce()) {
+						cars.remove(i);
+					}
+					else
+						collidingWithOtherObject(cars.get(i));
 				}
-				else if(cars.get(i).isOutOfBounce()) {
-					cars.remove(i);
-				}
-				else
-					collidingWithOtherObject(cars.get(i));
 			}
+			else if(crashed)
+			{
+				System.out.println("Inside of crashed!");
+				for(int i = 0; i < cars.size(); i++) {
+					cars.get(i).oppositeUpdate();
+					if(cars.get(i).isOppositeOutOfBounce()) {
+						cars.remove(i);
+					}
+				}
+				crashTimer += deltaTime*acceleration;
+				if (crashTimer >= crashTime)
+				{
+					crashTimer = 0;
+					crashed = false;
+				}
+
+			}
+
 
 			if(life <= 0) {
 				gameOverMenu = true;
