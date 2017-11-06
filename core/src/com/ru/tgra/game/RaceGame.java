@@ -170,7 +170,7 @@ public class RaceGame extends ApplicationAdapter {
 			}
 
 			for(int i = 0; i < crystals.size(); i++) {
-				crystals.get(i).update(objSpeed);
+				crystals.get(i).update(deltaTime, objSpeed);
 				if(sameLane(crystals.get(i).getLane()) && crystals.get(i).collidingWithPlayer()) {
 					crystals.remove(i);
 					score += 50;
@@ -226,7 +226,13 @@ public class RaceGame extends ApplicationAdapter {
 				System.out.println("Inside of crashed!");
 				for(int i = 0; i < cars.size(); i++) {
 					cars.get(i).oppositeUpdate();
-					if(cars.get(i).isOppositeOutOfBounce()) {
+					if(sameLane(cars.get(i).getLane()) && cars.get(i).collidingWithPlayer()) {
+						objSpeed = 0;
+						cars.remove(i);
+						crashed = true;
+						life --;
+					}
+					else if(cars.get(i).isOppositeOutOfBounce()) {
 						cars.remove(i);
 					}
 				}
@@ -236,14 +242,11 @@ public class RaceGame extends ApplicationAdapter {
 					crashTimer = 0;
 					crashed = false;
 				}
-
 			}
-
 
 			if(life <= 0) {
 				gameOverMenu = true;
 			}
-
 		}
 
 		// Quit the game
