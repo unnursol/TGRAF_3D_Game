@@ -60,6 +60,8 @@ public class RaceGame extends ApplicationAdapter {
 	private float objSpeed = 0f;
 	private float objStartPosition = -90f;
 	private float objEndPosition = 90f;
+	private int coinLane;
+	private int coinLaneCount;
 
 	private boolean crashed = false;
 	private float crashTime = maxspeed;
@@ -345,6 +347,24 @@ public class RaceGame extends ApplicationAdapter {
 			return;
 		}
 		zDistance = 0f;
+
+		// Spawn coin
+
+		if(coinLaneCount <= 0)
+		{
+			int temp = RandomGenerator.randomIntegerInRange(0, 1);
+			if((temp == 1 && coinLane != 4) || (temp == 0 && coinLane == 0))
+				coinLane++;
+			else
+				coinLane--;
+			coinLaneCount = RandomGenerator.randomIntegerInRange(1, 8);
+		}
+		Coin newCoin = new Coin(shader, lanes[coinLane], objStartPosition);
+		coins.add(newCoin);
+		coinLaneCount--;
+
+
+		// Spawn other objects
 		int numberOfSpawns = RandomGenerator.randomIntegerInRange(0,3);
 		int[] positions = new int[]{-1, -1, -1};
 		for(int i = 0; i < numberOfSpawns; i++)
@@ -356,8 +376,7 @@ public class RaceGame extends ApplicationAdapter {
 					positions[i] = laneNr;
 					float p = RandomGenerator.randomFloatInRange(0,1);
 					if(p > 0f && p < 0.3f) {
-						Coin newCoin = new Coin(shader, lanes[laneNr], objStartPosition);
-						coins.add(newCoin);
+
 					}
 					else if(p > 0.3f && p < 0.4f) {
 						Crystal newCrystal = new Crystal(shader, lanes[laneNr], objStartPosition);
@@ -372,7 +391,7 @@ public class RaceGame extends ApplicationAdapter {
 						CarObsticle newCar = new CarObsticle(shader, lanes[laneNr], objStartPosition,speed, 0);
 						cars.add(newCar);
 					}
-					else if(p > 0.97 && p < 1) {
+					else if(p > 0.995 && p < 1) {
 						Heart newHeart = new Heart(shader, lanes[laneNr], objStartPosition);
 						hearts.add(newHeart);
 					}

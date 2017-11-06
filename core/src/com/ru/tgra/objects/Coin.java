@@ -19,7 +19,7 @@ public class Coin extends Object{
     public Coin(Shader shader, float angleX, float angleZ)
     {
         super(shader, angleX, angleZ);
-        angleY = RandomGenerator.randomIntegerInRange(0,180);
+        angleY = RandomGenerator.randomIntegerInRange(0,360);
         model = G3DJModelLoader.loadG3DJFromFile("coin.g3dj");
     }
 
