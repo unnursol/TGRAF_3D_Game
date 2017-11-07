@@ -285,6 +285,9 @@ public class RaceGame extends ApplicationAdapter {
 			music.setLooping(true);
 			life = maxLife;
 			gameOverMenu = false;
+			playerCar.setLane(lanes[2]);
+			crashed = false;
+			crashBlick = 0;
 		}
 
 		// ------------ Camera god mode stuff ---------------
@@ -511,7 +514,9 @@ public class RaceGame extends ApplicationAdapter {
 					else if(p > 0.7 && p < 0.95) {
 						// Random number and random speed
 						float speed = RandomGenerator.randomFloatInRange(0.3f,0.8f);
-						CarObsticle newCar = new CarObsticle(shader, lanes[laneNr], objStartPosition,speed, 0);
+						int color = RandomGenerator.randomIntegerInRange(0,3);
+						System.out.println(color);
+						CarObsticle newCar = new CarObsticle(shader, lanes[laneNr], objStartPosition,speed, color);
 						cars.add(newCar);
 					}
 					else if(p > 0.995 && p < 1) {
@@ -522,21 +527,26 @@ public class RaceGame extends ApplicationAdapter {
 				}
 			}
 		}
-
-		if(score > 1000) {
-			Tree rightTree = new Tree(shader, rightSide, objStartPosition, 1);
-			Tree leftTree = new Tree(shader, leftSide, objStartPosition, 1);
+		int treeType;
+		if(score > 2000) {
+			treeType = 2;
+		}
+		else if(score > 1000) {
+			treeType = 1;
+			Tree rightTree = new Tree(shader, rightSide + 8, objStartPosition - 8, treeType);
+			Tree leftTree = new Tree(shader, leftSide - 8, objStartPosition - 8, treeType);
 
 			trees.add(rightTree);
 			trees.add(leftTree);
 		}
 		else {
-			Tree rightTree = new Tree(shader, rightSide, objStartPosition, 0);
-			Tree leftTree = new Tree(shader, leftSide, objStartPosition, 0);
-
-			trees.add(rightTree);
-			trees.add(leftTree);
+			treeType = 0;
 		}
+		Tree rightTree = new Tree(shader, rightSide, objStartPosition, treeType);
+		Tree leftTree = new Tree(shader, leftSide, objStartPosition, treeType);
+
+		trees.add(rightTree);
+		trees.add(leftTree);
 	}
 
 	private boolean doublePosition(int[] positions, int pos){
@@ -595,7 +605,6 @@ public class RaceGame extends ApplicationAdapter {
 		gameOverMenu = true;
 		gameOver.play(1f);
 		music.dispose();
-		playerCar.setLane(lanes[2]);
 	}
 
 }

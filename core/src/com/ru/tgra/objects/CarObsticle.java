@@ -17,10 +17,13 @@ public class CarObsticle extends Object {
         super(shader, angleX, angleZ);
         this.speed = speed;
         if(color == 0)
-            model = G3DJModelLoader.loadG3DJFromFile("lpCar.g3dj");
+            model = G3DJModelLoader.loadG3DJFromFile("blueCar.g3dj");
         else if(color == 1)
-            model = G3DJModelLoader.loadG3DJFromFile("lpCar.g3dj");
-        // ...
+            model = G3DJModelLoader.loadG3DJFromFile("greenCar.g3dj");
+        else if(color == 2)
+            model = G3DJModelLoader.loadG3DJFromFile("greyCar.g3dj");
+        else
+            model = G3DJModelLoader.loadG3DJFromFile("pineCar.g3dj");
         collisionWidthback = 6f;
         collisionWidthFront = -6f;
     }

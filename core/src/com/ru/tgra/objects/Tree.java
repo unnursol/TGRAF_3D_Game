@@ -18,6 +18,8 @@ public class Tree extends Object{
             model = G3DJModelLoader.loadG3DJFromFile("Palm_Tree.g3dj");
         } else if (tree == 1) {
             model = G3DJModelLoader.loadG3DJFromFile("Oak_Tree.g3dj");
+        } else if (tree == 2) {
+            model = G3DJModelLoader.loadG3DJFromFile("Poplar_Tree.g3dj");
         }
     }
     public void display(){
