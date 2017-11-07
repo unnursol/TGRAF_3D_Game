@@ -2,7 +2,6 @@ package com.ru.tgra.game;
 
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -11,7 +10,6 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.ru.tgra.models.*;
 import com.ru.tgra.objects.*;
 import com.ru.tgra.shapes.*;
@@ -67,11 +65,13 @@ public class RaceGame extends ApplicationAdapter {
 	private boolean crashed = false;
 	private float crashTime = maxspeed;
 	private float crashTimer = 0;
+	private float crashBlick = 0;
 
 
 	Music music;
 	Sound coinSound;
 	Sound carHornSound;
+	Sound gameOver;
 
 	private static float[] lanes = new float[]{ -16, -8, 0, 8, 16 };
 	private float zDistance = 0f;
@@ -130,6 +130,7 @@ public class RaceGame extends ApplicationAdapter {
 		music = Gdx.audio.newMusic(Gdx.files.internal("audio/song1.mp3"));
 		coinSound = Gdx.audio.newSound(Gdx.files.internal("audio/coinSound.mp3"));
 		carHornSound = Gdx.audio.newSound(Gdx.files.internal("audio/carHornSound.mp3"));
+		gameOver = Gdx.audio.newSound(Gdx.files.internal("audio/gameOver.mp3"));
 
 
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -178,7 +179,7 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(int i = 0; i < crystals.size(); i++) {
 				crystals.get(i).update(deltaTime, objSpeed);
-				if(sameLane(crystals.get(i).getLane()) && crystals.get(i).collidingWithPlayer()) {
+				if(sameLane(crystals.get(i).getLane(), playerCar.getLane()) && crystals.get(i).collidingWithPlayer()) {
 					crystals.remove(i);
 					score += 50;
 				}
@@ -189,7 +190,7 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(int i = 0; i < coins.size(); i++) {
 				coins.get(i).update(deltaTime, objSpeed);
-				if(sameLane(coins.get(i).getLane()) && coins.get(i).collidingWithPlayer()) {
+				if(sameLane(coins.get(i).getLane(), playerCar.getLane()) && coins.get(i).collidingWithPlayer()) {
 					coinSound.play(1f);
 					coins.remove(i);
 					score += 10;
@@ -202,7 +203,7 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(int i = 0; i < hearts.size(); i++) {
 				hearts.get(i).update(deltaTime, objSpeed);
-				if(sameLane(hearts.get(i).getLane()) && hearts.get(i).collidingWithPlayer()) {
+				if(sameLane(hearts.get(i).getLane(), playerCar.getLane()) && hearts.get(i).collidingWithPlayer()) {
 					hearts.remove(i);
 					if(life < maxLife)
 						life += 1;
@@ -216,8 +217,9 @@ public class RaceGame extends ApplicationAdapter {
 			{
 				for(int i = 0; i < cars.size(); i++) {
 					cars.get(i).update();
-					if(sameLane(cars.get(i).getLane()) && cars.get(i).collidingWithPlayer()) {
+					if(sameLane(cars.get(i).getLane(), playerCar.getLane()) && cars.get(i).collidingWithPlayer()) {
 						carHornSound.play(1f);
+						acceleration = 0;
 						objSpeed = 0;
 						//cars.remove(i);
 						crashed = true;
@@ -232,10 +234,10 @@ public class RaceGame extends ApplicationAdapter {
 			}
 			else if(crashed)
 			{
-				System.out.println("Inside of crashed!");
+				crashBlick += 0.2f;
 				for(int i = 0; i < cars.size(); i++) {
 					cars.get(i).oppositeUpdate();
-					if(sameLane(cars.get(i).getLane()) && cars.get(i).collidingWithPlayer()) {
+					if(sameLane(cars.get(i).getLane(), playerCar.getLane()) && cars.get(i).collidingWithPlayer()) {
 //						objSpeed = 0;
 //						cars.remove(i);
 //						crashed = true;
@@ -246,15 +248,17 @@ public class RaceGame extends ApplicationAdapter {
 					}
 				}
 				crashTimer += deltaTime*acceleration;
+				//System.out.println(crashTimer);
 				if (crashTimer >= crashTime)
 				{
 					crashTimer = 0;
 					crashed = false;
+					crashBlick = 0;
 				}
 			}
 
 			if(life <= 0) {
-				gameOverMenu = true;
+				gameOver();
 			}
 		}
 
@@ -273,61 +277,50 @@ public class RaceGame extends ApplicationAdapter {
 			mainMenu = false;
 		}
 
-		// Retart the game
+		// Restart the game
 		if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && gameOverMenu)
 		{
+			score = 0;
+			music.play();
+			music.setLooping(true);
 			life = maxLife;
 			gameOverMenu = false;
 		}
 
 		// ------------ Camera god mode stuff ---------------
 
-		if(Gdx.input.isKeyPressed(Input.Keys.A)) {
-			cam.slide(-3.0f * deltaTime, 0, 0);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.D)) {
-			cam.slide(3.0f * deltaTime, 0, 0);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-			cam.slide(0, 0, -3.0f * deltaTime);
-			//cam.walkForward(3.0f * deltaTime);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-			cam.slide(0, 0, 3.0f * deltaTime);
-			//cam.walkForward(-3.0f * deltaTime);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.R)) {
-			cam.slide(0, 3.0f * deltaTime, 0);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.F)) {
-			cam.slide(0, -3.0f * deltaTime, 0);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			cam.yaw(-90.0f * deltaTime);
-			//cam.rotateY(90.0f * deltaTime);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			cam.yaw(90.0f * deltaTime);
-			//cam.rotateY(-90.0f * deltaTime);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			cam.pitch(-90.0f * deltaTime);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			cam.pitch(90.0f * deltaTime);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
-			cam.roll(-90.0f * deltaTime);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.E)) {
-			cam.roll(90.0f * deltaTime);
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.T)) {
-			fov -= 30.0f * deltaTime;
-		}
-		if(Gdx.input.isKeyPressed(Input.Keys.G)) {
-			fov += 30.0f * deltaTime;
-		}
+//		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
+//			cam.slide(0, 0, -3.0f * deltaTime);
+//			//cam.walkForward(3.0f * deltaTime);
+//		}
+//		if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+//			cam.slide(0, 0, 3.0f * deltaTime);
+//			//cam.walkForward(-3.0f * deltaTime);
+//		}
+//		if(Gdx.input.isKeyPressed(Input.Keys.R)) {
+//			cam.slide(0, 3.0f * deltaTime, 0);
+//		}
+//		if(Gdx.input.isKeyPressed(Input.Keys.F)) {
+//			cam.slide(0, -3.0f * deltaTime, 0);
+//		}
+//		if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+//			cam.pitch(-90.0f * deltaTime);
+//		}
+//		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+//			cam.pitch(90.0f * deltaTime);
+//		}
+//		if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
+//			cam.roll(-90.0f * deltaTime);
+//		}
+//		if(Gdx.input.isKeyPressed(Input.Keys.E)) {
+//			cam.roll(90.0f * deltaTime);
+//		}
+//		if(Gdx.input.isKeyPressed(Input.Keys.T)) {
+//			fov -= 30.0f * deltaTime;
+//		}
+//		if(Gdx.input.isKeyPressed(Input.Keys.G)) {
+//			fov += 30.0f * deltaTime;
+//		}
 	}
 
 	private void collidingWithOtherObject(CarObsticle theCar) {
@@ -344,11 +337,132 @@ public class RaceGame extends ApplicationAdapter {
 		for(Crystal crystal : crystals)
 		{
 			if((crystal.getLane() == theCar.getLane()) && theCar.collidingWithObj(crystal)) {
-				// Beygja á næstu akrein
+				// Beygja á næstu akrein maybe
 			}
 
 		}
 	}
+
+
+	private void display()
+	{
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+
+		for(int viewNum = 0; viewNum < 2; viewNum++)
+		{
+			if(viewNum == 0)
+			{
+				Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+				cam.perspectiveProjection(fov, (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight(), 0.1f, 100.0f);
+				shader.setViewMatrix(cam.getViewMatrix());
+				shader.setProjectionMatrix(cam.getProjectionMatrix());
+				shader.setLightPosition(cam.eye.x,cam.eye.y,cam.eye.z,1f);
+			}
+			else
+			{
+				int miniMapHeight = 250;
+				int miniMapWidth = 250;
+				Gdx.gl.glViewport((Gdx.graphics.getWidth() - miniMapWidth), Gdx.graphics.getHeight() - miniMapHeight, miniMapWidth, miniMapHeight);
+				Point3D camTrace = new Point3D(cam.eye.x, cam.eye.y, cam.eye.z);
+				shader.setViewMatrix(orthoCam.getViewMatrix());
+				shader.setProjectionMatrix(orthoCam.getProjectionMatrix());
+
+				shader.setLightPosition(cam.eye.x,10f,cam.eye.z,1f);
+			}
+
+			ModelMatrix.main.loadIdentityMatrix();
+
+			float s = (float)Math.sin((angle / 2.0) * Math.PI / 180.0);
+			float c = (float)Math.cos((angle / 2.0) * Math.PI / 180.0);
+
+			shader.setLightPosition(0.0f + c * 3.0f, 5.0f, 0.0f + s * 3.0f, 1.0f);
+
+			float s2 = Math.abs((float)Math.sin((angle / 1.312) * Math.PI / 180.0));
+			float c2 = Math.abs((float)Math.cos((angle / 1.312) * Math.PI / 180.0));
+
+			shader.setSpotDirection(s2, -0.3f, c2, 0.0f);
+			//shader.setSpotDirection(-cam.n.x, -cam.n.y, -cam.n.z, 0.0f);
+			shader.setSpotExponent(0.0f);
+			shader.setConstantAttenuation(1.0f);
+			shader.setLinearAttenuation(0.00f);
+			shader.setQuadraticAttenuation(0.00f);
+
+			//shader.setLightColor(s2, 0.4f, c2, 1.0f);
+			shader.setLightColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+			shader.setGlobalAmbient(0.3f, 0.3f, 0.3f, 1);
+
+			shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
+			shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
+			shader.setMaterialEmission(0, 0, 0, 1);
+			shader.setShininess(50.0f);
+
+			shader.setModelMatrix(ModelMatrix.main.getMatrix());
+
+			// Draw the playerCar
+			if(!crashed) {
+				playerCar.display();
+			}
+			else if(crashed && crashBlick % 2 >= 1) {
+				playerCar.display();
+			}
+
+			// Draw the ground
+			ground.display();
+
+			// Draw objects
+			for(Tree tree : trees) {
+				tree.display();
+			}
+
+			for(Crystal crystal : crystals) {
+				crystal.display();
+			}
+
+			for(Coin coin : coins) {
+				coin.display();
+			}
+
+			for(Heart heart : hearts) {
+				heart.display();
+			}
+
+			for(CarObsticle car : cars) {
+				car.display();
+			}
+
+			if( viewNum == 0)
+			{
+				sky.display(shader);
+
+				// Display score and menus
+				if(mainMenu) {
+					menu.displayMainMenu(shader);
+				}
+				else if(gameOverMenu) {
+					menu.displayGameOver(shader, score);
+				}
+				else {
+					menu.displayScore(shader, score);
+				}
+			}
+		}
+
+		displayLife();
+	}
+
+	@Override
+	public void render () {
+		update();
+		display();
+
+	}
+
+	// --------------------------------------------------
+	//				Helper functions
+	// --------------------------------------------------
 
 	private void spawnObjects() {
 		zDistance += objSpeed;
@@ -434,124 +548,13 @@ public class RaceGame extends ApplicationAdapter {
 		return false;
 	}
 
-	private boolean sameLane(float lane) {
-		if(lane == playerCar.getLane()) {
+	private boolean sameLane(float lane, float playerLane) {
+		if(lane == playerLane) {
 			return true;
 		}
 		else {
 			return false;
 		}
-	}
-
-	private void display()
-	{
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-
-		for(int viewNum = 0; viewNum < 2; viewNum++)
-		{
-			if(viewNum == 0)
-			{
-				Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-				cam.perspectiveProjection(fov, (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight(), 0.1f, 100.0f);
-				shader.setViewMatrix(cam.getViewMatrix());
-				shader.setProjectionMatrix(cam.getProjectionMatrix());
-				shader.setLightPosition(cam.eye.x,cam.eye.y,cam.eye.z,1f);
-			}
-			else
-			{
-				int miniMapHeight = 250;
-				int miniMapWidth = 250;
-				Gdx.gl.glViewport((Gdx.graphics.getWidth() - miniMapWidth), Gdx.graphics.getHeight() - miniMapHeight, miniMapWidth, miniMapHeight);
-				Point3D camTrace = new Point3D(cam.eye.x, cam.eye.y, cam.eye.z);
-				shader.setViewMatrix(orthoCam.getViewMatrix());
-				shader.setProjectionMatrix(orthoCam.getProjectionMatrix());
-
-				shader.setLightPosition(cam.eye.x,10f,cam.eye.z,1f);
-			}
-
-			ModelMatrix.main.loadIdentityMatrix();
-
-			float s = (float)Math.sin((angle / 2.0) * Math.PI / 180.0);
-			float c = (float)Math.cos((angle / 2.0) * Math.PI / 180.0);
-
-			shader.setLightPosition(0.0f + c * 3.0f, 5.0f, 0.0f + s * 3.0f, 1.0f);
-
-			float s2 = Math.abs((float)Math.sin((angle / 1.312) * Math.PI / 180.0));
-			float c2 = Math.abs((float)Math.cos((angle / 1.312) * Math.PI / 180.0));
-
-			shader.setSpotDirection(s2, -0.3f, c2, 0.0f);
-			//shader.setSpotDirection(-cam.n.x, -cam.n.y, -cam.n.z, 0.0f);
-			shader.setSpotExponent(0.0f);
-			shader.setConstantAttenuation(1.0f);
-			shader.setLinearAttenuation(0.00f);
-			shader.setQuadraticAttenuation(0.00f);
-
-			//shader.setLightColor(s2, 0.4f, c2, 1.0f);
-			shader.setLightColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-			shader.setGlobalAmbient(0.3f, 0.3f, 0.3f, 1);
-
-			shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
-			shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
-			shader.setMaterialEmission(0, 0, 0, 1);
-			shader.setShininess(50.0f);
-
-			shader.setModelMatrix(ModelMatrix.main.getMatrix());
-
-			// Draw the playerCar
-			playerCar.display();
-
-			// Draw the ground
-			ground.display();
-
-			// Draw objects
-			for(Tree tree : trees) {
-				tree.display();
-			}
-
-			for(Crystal crystal : crystals) {
-				crystal.display();
-			}
-
-			for(Coin coin : coins) {
-				coin.display();
-			}
-
-			for(Heart heart : hearts) {
-				heart.display();
-			}
-
-			for(CarObsticle car : cars) {
-				car.display();
-			}
-
-			if( viewNum == 0)
-			{
-				sky.display(shader);
-
-				// Display score and menus
-				if(mainMenu) {
-					menu.displayMainMenu(shader);
-				}
-				else if(gameOverMenu) {
-					menu.displayGameOver(shader, score);
-				}
-				else {
-					menu.displayScore(shader, score);
-				}
-			}
-		}
-
-		displayLife();
-	}
-
-	@Override
-	public void render () {
-		update();
-		display();
-
 	}
 
 	public void displayLife() {
@@ -586,6 +589,13 @@ public class RaceGame extends ApplicationAdapter {
 			x += heartWidth;
 
 		}
+	}
+
+	public void gameOver() {
+		gameOverMenu = true;
+		gameOver.play(1f);
+		music.dispose();
+		playerCar.setLane(lanes[2]);
 	}
 
 }

@@ -45,9 +45,9 @@ public class Car
 
     public void update(float rawDeltaTime)
     {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isKeyJustPressed(Input.Keys.A)) {
             destAngleX = destAngleX <= -16 ? destAngleX : destAngleX - 8;
-        } else if(Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+        } else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.D)) {
             destAngleX = destAngleX >= 16 ? destAngleX : destAngleX + 8;
         }
         if(angleX < destAngleX){
@@ -92,5 +92,8 @@ public class Car
 
     public float getLane() {
         return angleX;
+    }
+    public void setLane(float angleX) {
+        this.angleX = angleX;
     }
 }

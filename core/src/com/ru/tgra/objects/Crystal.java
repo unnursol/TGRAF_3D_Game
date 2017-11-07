@@ -18,6 +18,8 @@ public class Crystal extends Object {
         super(shader, angleX, angleZ);
         angleY = RandomGenerator.randomIntegerInRange(0,180);
         model = G3DJModelLoader.loadG3DJFromFile("Crystal.g3dj");
+        collisionWidthback = 5f;
+        collisionWidthFront = -5f;
 
     }
     public void update(float rawDeltaTime, float speed) {
