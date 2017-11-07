@@ -21,6 +21,8 @@ public class CarObsticle extends Object {
         else if(color == 1)
             model = G3DJModelLoader.loadG3DJFromFile("lpCar.g3dj");
         // ...
+        collisionWidthback = 6f;
+        collisionWidthFront = -6f;
     }
     public void update() {
         super.update(+speed);

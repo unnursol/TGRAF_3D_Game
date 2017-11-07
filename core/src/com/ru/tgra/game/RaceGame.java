@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.ru.tgra.models.*;
@@ -69,6 +70,8 @@ public class RaceGame extends ApplicationAdapter {
 
 
 	Music music;
+	Sound coinSound;
+	Sound carHornSound;
 
 	private static float[] lanes = new float[]{ -16, -8, 0, 8, 16 };
 	private float zDistance = 0f;
@@ -125,7 +128,9 @@ public class RaceGame extends ApplicationAdapter {
 		lifeCam.orthographicProjection(-83.3f,83.3f,-25.0f,25.0f,1.0f, 100.0f);
 
 		music = Gdx.audio.newMusic(Gdx.files.internal("audio/song1.mp3"));
-		music.play();
+		coinSound = Gdx.audio.newSound(Gdx.files.internal("audio/coinSound.mp3"));
+		carHornSound = Gdx.audio.newSound(Gdx.files.internal("audio/carHornSound.mp3"));
+
 
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -185,6 +190,7 @@ public class RaceGame extends ApplicationAdapter {
 			for(int i = 0; i < coins.size(); i++) {
 				coins.get(i).update(deltaTime, objSpeed);
 				if(sameLane(coins.get(i).getLane()) && coins.get(i).collidingWithPlayer()) {
+					coinSound.play(1f);
 					coins.remove(i);
 					score += 10;
 				}
@@ -211,8 +217,9 @@ public class RaceGame extends ApplicationAdapter {
 				for(int i = 0; i < cars.size(); i++) {
 					cars.get(i).update();
 					if(sameLane(cars.get(i).getLane()) && cars.get(i).collidingWithPlayer()) {
+						carHornSound.play(1f);
 						objSpeed = 0;
-						cars.remove(i);
+						//cars.remove(i);
 						crashed = true;
 						life --;
 					}
@@ -229,10 +236,10 @@ public class RaceGame extends ApplicationAdapter {
 				for(int i = 0; i < cars.size(); i++) {
 					cars.get(i).oppositeUpdate();
 					if(sameLane(cars.get(i).getLane()) && cars.get(i).collidingWithPlayer()) {
-						objSpeed = 0;
-						cars.remove(i);
-						crashed = true;
-						life --;
+//						objSpeed = 0;
+//						cars.remove(i);
+//						crashed = true;
+//						life --;
 					}
 					else if(cars.get(i).isOppositeOutOfBounce()) {
 						cars.remove(i);
@@ -261,6 +268,8 @@ public class RaceGame extends ApplicationAdapter {
 		// Start the game
 		if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && mainMenu)
 		{
+			music.play();
+			music.setLooping(true);
 			mainMenu = false;
 		}
 
@@ -372,7 +381,7 @@ public class RaceGame extends ApplicationAdapter {
 			while(true)
 			{
 				int laneNr = RandomGenerator.randomIntegerInRange(0,4);
-				if(!doublePosition(positions, laneNr)) {
+				if(!doublePosition(positions, laneNr) && laneNr != coinLane) {
 					positions[i] = laneNr;
 					float p = RandomGenerator.randomFloatInRange(0,1);
 					if(p > 0f && p < 0.3f) {
