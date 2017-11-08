@@ -14,8 +14,12 @@ public class Object {
     protected float angleX = 0;
     protected float angleZ = 0;
     protected float angleY = 0;
+
+    // For checking collision with the player
     protected float collisionWidthFront = -1f;
     protected float collisionWidthback = 1f;
+    protected float collisionWidthRight = 1f;
+    protected float collisionWidthLeft = -1f;
 
     private Point3D groundCenter;
     private float groundRadius;
@@ -54,8 +58,9 @@ public class Object {
         return angleX;
     }
 
-    public boolean collidingWithPlayer() {
-        if(angleZ >= collisionWidthFront && angleZ <= collisionWidthback)
+    public boolean collidingWithPlayer(float playerXposition) {
+        if((angleZ >= collisionWidthFront && angleZ <= collisionWidthback) &&
+                (angleX >= playerXposition+collisionWidthLeft && angleX <= playerXposition+collisionWidthRight))
             return true;
         return false;
     }

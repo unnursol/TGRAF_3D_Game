@@ -26,6 +26,8 @@ public class CarObsticle extends Object {
             model = G3DJModelLoader.loadG3DJFromFile("pineCar.g3dj");
         collisionWidthback = 6f;
         collisionWidthFront = -6f;
+        collisionWidthRight = 4f;
+        collisionWidthLeft = -4f;
     }
     public void update() {
         super.update(+speed);

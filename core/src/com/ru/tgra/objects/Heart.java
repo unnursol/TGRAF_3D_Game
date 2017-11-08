@@ -21,6 +21,10 @@ public class Heart extends Object{
         super(shader, angleX, angleZ);
         angleY = RandomGenerator.randomIntegerInRange(0,180);
         model = G3DJModelLoader.loadG3DJFromFile("heart.g3dj");
+        collisionWidthback = 5f;
+        collisionWidthFront = -5f;
+        collisionWidthRight = 3f;
+        collisionWidthLeft = -3f;
     }
 
     public void update(float rawDeltaTime, float speed)

@@ -51,6 +51,7 @@ public class RaceGame extends ApplicationAdapter {
 	private ArrayList<Coin> coins;
 	private ArrayList<Heart> hearts;
 	private ArrayList<CarObsticle> cars;
+	private ArrayList<Cone> cones;
 
 	// Game settings
 	private float maxspeed = 0.8f;
@@ -66,7 +67,6 @@ public class RaceGame extends ApplicationAdapter {
 	private float crashTime = maxspeed;
 	private float crashTimer = 0;
 	private float crashBlick = 0;
-
 
 	Music music;
 	Sound coinSound;
@@ -112,6 +112,7 @@ public class RaceGame extends ApplicationAdapter {
 		coins = new ArrayList<Coin>();
 		hearts = new ArrayList<Heart>();
 		cars = new ArrayList<CarObsticle>();
+		cones = new ArrayList<Cone>();
 
 		playerCar = new Car(shader);
 
@@ -122,7 +123,7 @@ public class RaceGame extends ApplicationAdapter {
 
 		orthoCam = new Camera();
 		orthoCam.perspectiveProjection(100.0f, 1, 3, 100);
-		orthoCam.look(new Point3D(0f, 10.0f, 0f), new Point3D(0f, 0f, 0f), new Vector3D(0,0,1));
+		orthoCam.look(new Point3D(0f, 15.0f, 0f), new Point3D(0f, 0f, 0f), new Vector3D(0,0,1));
 
 		lifeCam = new Camera();
 		lifeCam.orthographicProjection(-83.3f,83.3f,-25.0f,25.0f,1.0f, 100.0f);
@@ -179,7 +180,7 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(int i = 0; i < crystals.size(); i++) {
 				crystals.get(i).update(deltaTime, objSpeed);
-				if(sameLane(crystals.get(i).getLane(), playerCar.getLane()) && crystals.get(i).collidingWithPlayer()) {
+				if(crystals.get(i).collidingWithPlayer(playerCar.getLane())) {
 					crystals.remove(i);
 					score += 50;
 				}
@@ -190,7 +191,7 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(int i = 0; i < coins.size(); i++) {
 				coins.get(i).update(deltaTime, objSpeed);
-				if(sameLane(coins.get(i).getLane(), playerCar.getLane()) && coins.get(i).collidingWithPlayer()) {
+				if(coins.get(i).collidingWithPlayer(playerCar.getLane())) {
 					coinSound.play(1f);
 					coins.remove(i);
 					score += 10;
@@ -203,7 +204,7 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(int i = 0; i < hearts.size(); i++) {
 				hearts.get(i).update(deltaTime, objSpeed);
-				if(sameLane(hearts.get(i).getLane(), playerCar.getLane()) && hearts.get(i).collidingWithPlayer()) {
+				if(hearts.get(i).collidingWithPlayer(playerCar.getLane())) {
 					hearts.remove(i);
 					if(life < maxLife)
 						life += 1;
@@ -213,11 +214,21 @@ public class RaceGame extends ApplicationAdapter {
 				}
 			}
 
+			for(int i = 0; i < cones.size(); i++) {
+				cones.get(i).update(objSpeed);
+				if(!crashed && cones.get(i).collidingWithPlayer(playerCar.getLane())) {
+					// SUMTHIN
+				}
+				else if(cones.get(i).isOutOfBounce()) {
+					cones.remove(i);
+				}
+			}
+
 			if(!crashed)
 			{
 				for(int i = 0; i < cars.size(); i++) {
 					cars.get(i).update();
-					if(sameLane(cars.get(i).getLane(), playerCar.getLane()) && cars.get(i).collidingWithPlayer()) {
+					if(cars.get(i).collidingWithPlayer(playerCar.getLane())) {
 						carHornSound.play(1f);
 						acceleration = 0;
 						objSpeed = 0;
@@ -237,13 +248,7 @@ public class RaceGame extends ApplicationAdapter {
 				crashBlick += 0.2f;
 				for(int i = 0; i < cars.size(); i++) {
 					cars.get(i).oppositeUpdate();
-					if(sameLane(cars.get(i).getLane(), playerCar.getLane()) && cars.get(i).collidingWithPlayer()) {
-//						objSpeed = 0;
-//						cars.remove(i);
-//						crashed = true;
-//						life --;
-					}
-					else if(cars.get(i).isOppositeOutOfBounce()) {
+					if(cars.get(i).isOppositeOutOfBounce()) {
 						cars.remove(i);
 					}
 				}
@@ -256,7 +261,7 @@ public class RaceGame extends ApplicationAdapter {
 					crashBlick = 0;
 				}
 			}
-
+			// Game over
 			if(life <= 0) {
 				gameOver();
 			}
@@ -285,45 +290,8 @@ public class RaceGame extends ApplicationAdapter {
 			music.setLooping(true);
 			life = maxLife;
 			gameOverMenu = false;
-			playerCar.setLane(lanes[2]);
-			crashed = false;
-			crashBlick = 0;
 		}
 
-		// ------------ Camera god mode stuff ---------------
-
-//		if(Gdx.input.isKeyPressed(Input.Keys.W)) {
-//			cam.slide(0, 0, -3.0f * deltaTime);
-//			//cam.walkForward(3.0f * deltaTime);
-//		}
-//		if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-//			cam.slide(0, 0, 3.0f * deltaTime);
-//			//cam.walkForward(-3.0f * deltaTime);
-//		}
-//		if(Gdx.input.isKeyPressed(Input.Keys.R)) {
-//			cam.slide(0, 3.0f * deltaTime, 0);
-//		}
-//		if(Gdx.input.isKeyPressed(Input.Keys.F)) {
-//			cam.slide(0, -3.0f * deltaTime, 0);
-//		}
-//		if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
-//			cam.pitch(-90.0f * deltaTime);
-//		}
-//		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-//			cam.pitch(90.0f * deltaTime);
-//		}
-//		if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
-//			cam.roll(-90.0f * deltaTime);
-//		}
-//		if(Gdx.input.isKeyPressed(Input.Keys.E)) {
-//			cam.roll(90.0f * deltaTime);
-//		}
-//		if(Gdx.input.isKeyPressed(Input.Keys.T)) {
-//			fov -= 30.0f * deltaTime;
-//		}
-//		if(Gdx.input.isKeyPressed(Input.Keys.G)) {
-//			fov += 30.0f * deltaTime;
-//		}
 	}
 
 	private void collidingWithOtherObject(CarObsticle theCar) {
@@ -368,7 +336,6 @@ public class RaceGame extends ApplicationAdapter {
 				int miniMapHeight = 250;
 				int miniMapWidth = 250;
 				Gdx.gl.glViewport((Gdx.graphics.getWidth() - miniMapWidth), Gdx.graphics.getHeight() - miniMapHeight, miniMapWidth, miniMapHeight);
-				Point3D camTrace = new Point3D(cam.eye.x, cam.eye.y, cam.eye.z);
 				shader.setViewMatrix(orthoCam.getViewMatrix());
 				shader.setProjectionMatrix(orthoCam.getProjectionMatrix());
 
@@ -434,6 +401,10 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(CarObsticle car : cars) {
 				car.display();
+			}
+
+			for(Cone cone : cones) {
+				cone.display();
 			}
 
 			if( viewNum == 0)
@@ -504,22 +475,22 @@ public class RaceGame extends ApplicationAdapter {
 					if(p > 0f && p < 0.3f) {
 
 					}
-					else if(p > 0.3f && p < 0.4f) {
+					else if(p >= 0.3f && p < 0.35f) {
 						Crystal newCrystal = new Crystal(shader, lanes[laneNr], objStartPosition);
 						crystals.add(newCrystal);
 					}
-					else if(p > 0.4f && p < 0.7) {
-
+					else if(p >= 0.35f && p < 0.7) {
+						Cone newCone = new Cone(shader, lanes[laneNr], objStartPosition);
+						cones.add(newCone);
 					}
-					else if(p > 0.7 && p < 0.95) {
+					else if(p >= 0.7 && p < 0.995) {
 						// Random number and random speed
 						float speed = RandomGenerator.randomFloatInRange(0.3f,0.8f);
 						int color = RandomGenerator.randomIntegerInRange(0,3);
-						System.out.println(color);
 						CarObsticle newCar = new CarObsticle(shader, lanes[laneNr], objStartPosition,speed, color);
 						cars.add(newCar);
 					}
-					else if(p > 0.995 && p < 1) {
+					else if(p >= 0.995 && p < 1) {
 						Heart newHeart = new Heart(shader, lanes[laneNr], objStartPosition);
 						hearts.add(newHeart);
 					}
