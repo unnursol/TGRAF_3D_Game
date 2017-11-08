@@ -509,9 +509,9 @@ public class RaceGame extends ApplicationAdapter {
 					}
 					else if(p >= 0.7 && p < 0.995) {
 						// Random number and random speed
-						float speed = RandomGenerator.randomFloatInRange(0.3f,0.8f);
+						float speed = RandomGenerator.randomFloatInRange(maxspeed * 0.2f,maxspeed * 0.8f);
 						int color = RandomGenerator.randomIntegerInRange(0,3);
-						CarObsticle newCar = new CarObsticle(shader, lanes[laneNr], objStartPosition,speed, color);
+						CarObsticle newCar = new CarObsticle(shader, lanes[laneNr], objStartPosition, speed, color);
 						cars.add(newCar);
 					}
 					else if(p >= 0.995 && p < 1) {
