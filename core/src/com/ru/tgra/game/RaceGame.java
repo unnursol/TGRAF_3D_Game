@@ -476,11 +476,21 @@ public class RaceGame extends ApplicationAdapter {
 			while(true)
 			{
 				int laneNr = RandomGenerator.randomIntegerInRange(0,4);
+				boolean noCarGo = false;
+				for(CarObsticle car : cars){
+					if(car.collidingSpawnPosition(lanes[laneNr], objStartPosition)) {
+						noCarGo = true;
+						break;
+					}
+				}
+				if(noCarGo){
+					break;
+				}
 				if(!doublePosition(positions, laneNr) && laneNr != coinLane) {
 					positions[i] = laneNr;
 					float p = RandomGenerator.randomFloatInRange(0,1);
 					if(p > 0f && p < 0.3f) {
-
+						// Spawn nothing
 					}
 					else if(p >= 0.3f && p < 0.35f) {
 						Crystal newCrystal = new Crystal(shader, lanes[laneNr], objStartPosition);

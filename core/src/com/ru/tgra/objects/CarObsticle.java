@@ -46,6 +46,13 @@ public class CarObsticle extends Object {
         return false;
     }
 
+    public boolean collidingSpawnPosition(float xPos, float zPos){
+        if(angleX == xPos && (angleZ >= zPos-15f && angleZ <= zPos + 10f)){
+            return true;
+        }
+        return false;
+    }
+
     public void setSpeed(float speed) {
         this.speed = speed;
     }
