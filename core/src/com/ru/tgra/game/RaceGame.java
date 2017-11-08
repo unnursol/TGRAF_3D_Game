@@ -235,6 +235,7 @@ public class RaceGame extends ApplicationAdapter {
 						//cars.remove(i);
 						crashed = true;
 						life --;
+
 					}
 					else if(cars.get(i).isOutOfBounce()) {
 						cars.remove(i);
@@ -245,6 +246,7 @@ public class RaceGame extends ApplicationAdapter {
 			}
 			else if(crashed)
 			{
+				cam.shake();
 				crashBlick += 0.2f;
 				for(int i = 0; i < cars.size(); i++) {
 					cars.get(i).oppositeUpdate();
@@ -259,6 +261,7 @@ public class RaceGame extends ApplicationAdapter {
 					crashTimer = 0;
 					crashed = false;
 					crashBlick = 0;
+					cam.shakeTimer = 0;
 				}
 			}
 			// Game over
@@ -326,6 +329,7 @@ public class RaceGame extends ApplicationAdapter {
 			if(viewNum == 0)
 			{
 				Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+				cam.look(new Point3D(0f, 6f, -2f), new Point3D(0,0f,3f), new Vector3D(0,1,0));
 				cam.perspectiveProjection(fov, (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight(), 0.1f, 100.0f);
 				shader.setViewMatrix(cam.getViewMatrix());
 				shader.setProjectionMatrix(cam.getProjectionMatrix());
@@ -576,6 +580,10 @@ public class RaceGame extends ApplicationAdapter {
 		gameOverMenu = true;
 		gameOver.play(1f);
 		music.dispose();
+	}
+
+	public void cameraShake() {
+
 	}
 
 }
