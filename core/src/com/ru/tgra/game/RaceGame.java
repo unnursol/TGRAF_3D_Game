@@ -318,6 +318,13 @@ public class RaceGame extends ApplicationAdapter {
 			}
 
 		}
+
+		for(Cone cone : cones)
+		{
+			if((cone.getLane() == theCar.getLane()) && theCar.collidingWithObj(cone)) {
+				theCar.setSpeed(0);
+			}
+		}
 	}
 
 
@@ -583,10 +590,6 @@ public class RaceGame extends ApplicationAdapter {
 		gameOverMenu = true;
 		gameOver.play(1f);
 		music.dispose();
-	}
-
-	public void cameraShake() {
-
 	}
 
 }
