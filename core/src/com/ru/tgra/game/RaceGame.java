@@ -47,6 +47,7 @@ public class RaceGame extends ApplicationAdapter {
 
 	// Score
 	private int score = 0;
+	private int treeLevel = 500;
 
 	// Objects
 	Car playerCar;
@@ -608,17 +609,19 @@ public class RaceGame extends ApplicationAdapter {
 		}
 		int treeType = 0;
 		boolean spawnTrees = false;
-		if(score < 500) {
+		int spawn = 0;
+		if(score >= treeLevel) {
+			spawn = RandomGenerator.randomIntegerInRange(0,3);
+			treeLevel += 500;
+		}
+		if(spawn == 0) {
 			spawnTrees = false;
 		}
-		else if(score < 1000) {
+		else if(spawn == 1) {
 			spawnTrees = true;
 			treeType = 0;
 		}
-		else if(score < 1500) {
-			spawnTrees = false;
-		}
-		else if(score < 2000) {
+		else if(spawn == 2) {
 			spawnTrees = true;
 			treeType = 1;
 			Tree rightTree = new Tree(shader, rightSide + 8, objStartPosition - 8, treeType);
@@ -627,10 +630,7 @@ public class RaceGame extends ApplicationAdapter {
 			trees.add(rightTree);
 			trees.add(leftTree);
 		}
-		else if(score < 2500) {
-			spawnTrees = false;
-		}
-		else if(score < 3000) {
+		else if(spawn == 3) {
 			spawnTrees = true;
 			treeType = 2;
 		}
