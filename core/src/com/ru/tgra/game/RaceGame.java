@@ -37,6 +37,8 @@ public class RaceGame extends ApplicationAdapter {
 
 	// Lights
 	private float angle;
+	private float totalTime;
+	private float timeOfDay;
 
 	// Menu stuff
 	private Menu menu;
@@ -96,6 +98,7 @@ public class RaceGame extends ApplicationAdapter {
 
 		shader = new Shader();
 		angle = 0f;
+		totalTime = 0f;
 
 		BoxGraphic.create();
 		SphereGraphic.create();
@@ -166,7 +169,9 @@ public class RaceGame extends ApplicationAdapter {
 	private void update()
 	{
 		float deltaTime = Gdx.graphics.getDeltaTime();
-		angle += 10 * deltaTime;
+		totalTime += deltaTime;
+		angle += 180 * deltaTime;
+		timeOfDay = (float)(0.5f * (1 + Math.sin(2f * Math.PI * 0.01f * totalTime)));
 
 		// While playing the game
 		if(!mainMenu && !gameOverMenu) {
@@ -347,7 +352,7 @@ public class RaceGame extends ApplicationAdapter {
 				cam.perspectiveProjection(fov, (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight(), 0.1f, 100.0f);
 				shader.setViewMatrix(cam.getViewMatrix());
 				shader.setProjectionMatrix(cam.getProjectionMatrix());
-//				shader.setLightPosition(cam.eye.x,cam.eye.y,cam.eye.z,1f);
+				shader.setLightPosition(cam.eye.x,cam.eye.y,cam.eye.z,1f);
 			}
 			else
 			{
@@ -378,11 +383,11 @@ public class RaceGame extends ApplicationAdapter {
 			//shader.setLightColor(s2, 0.4f, c2, 1.0f);
 			shader.setLightColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-			shader.setGlobalAmbient(0f, 0f, 0f, 1);
+			shader.setGlobalAmbient(timeOfDay, timeOfDay, timeOfDay, 1);
 
 			shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
 			shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
-			shader.setMaterialEmission(0, 0, 0, 1);
+			shader.setMaterialEmission(0f, 0f, 0f, 1);
 			shader.setShininess(50.0f);
 
 			ModelMatrix.main.loadIdentityMatrix();
@@ -393,9 +398,12 @@ public class RaceGame extends ApplicationAdapter {
 			ModelMatrix.main.addTranslation(0f, 20f, 0f);
 			shader.setModelMatrix(ModelMatrix.main.getMatrix());
 			shader.setLightPosition(ModelMatrix.main.getOrigin().x, ModelMatrix.main.getOrigin().y, ModelMatrix.main.getOrigin().z, 1f);
-			ModelMatrix.main.addRotationX(40f);
-			shader.setSpotDirection(ModelMatrix.main.getB().x, ModelMatrix.main.getB().y, ModelMatrix.main.getB().z, 0f);
+			ModelMatrix.main.addRotationX(10f);
+			shader.setSpotExponent(4f);
+			shader.setSpotDirection(ModelMatrix.main.getC().x, ModelMatrix.main.getC().y, ModelMatrix.main.getC().z, 0f);
 			ModelMatrix.main.popMatrix();
+			shader.setLightPosition(cam.eye.x, cam.eye.y, cam.eye.z, 1f);
+			shader.setSpotExponent(0f);
 
 			// Draw the playerCar
 			if(!crashed) {

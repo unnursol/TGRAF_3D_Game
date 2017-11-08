@@ -56,8 +56,8 @@ public class Object {
         ModelMatrix.main.loadIdentityMatrix();
         ModelMatrix.main.pushMatrix();
         ModelMatrix.main.addTranslationBaseCoords(groundCenter.x,groundCenter.y,groundCenter.z);
-        ModelMatrix.main.addRotationZ(angleX);
         ModelMatrix.main.addRotationX(-angleZ);
+        ModelMatrix.main.addRotationZ(angleX);
         ModelMatrix.main.addTranslation(0f+xOffset, groundRadius+height+yOffset, 0f+zOffset);
         ModelMatrix.main.addScale(scale,scale,scale);
         ModelMatrix.main.addRotationY(angleY);
