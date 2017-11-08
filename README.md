@@ -1,4 +1,4 @@
-# 3D Game - SOME COOL NAME - Assignment 5
+# 3D Game - Sweet-ish roligt roadtrip - Assignment 5
 
 **Computer Graphics - Fall 2017**.
 
@@ -12,19 +12,16 @@
 
 ## Controls
 
-- `WASD` Movement.
-- `← → ↑ ↓` Look around.
-- `SHIFT` Move faster, this makes the evil snowman move faster as well.
-- `Mouse` The mouse can also be used to look around.
-- `V` God Mode, makes it possible to go through walls, fly around based on directional/looking vector and enables other buttons such as:
-  - `R` Move down.
-  - `F` Move up.
+- `AD` or `← → ` Movement.
 
 ## Gameplay
+Your goal is to drive around the amazing planet while collecting points and avoid hitting the other cars driving.
 
 ## Known bugs
 
 ## Cool features that we spent time on
+
+1. Models
 
 ## Authors
 
