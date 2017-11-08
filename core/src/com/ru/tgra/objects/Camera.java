@@ -5,6 +5,7 @@ import java.nio.FloatBuffer;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.ru.tgra.models.Point3D;
 import com.ru.tgra.models.Vector3D;
+import com.ru.tgra.utilities.RandomGenerator;
 
 public class Camera {
 
@@ -21,6 +22,13 @@ public class Camera {
 	float top;
 	float near;
 	float far;
+
+	public float shakeTime = 3f;
+	public float shakeTimer = 0f;
+	private float xOffset = 0f;
+	private float yOffset = 0f;
+	private float zOffset = 0f;
+
 
 	private FloatBuffer matrixBuffer;
 	
@@ -45,7 +53,7 @@ public class Camera {
 
 	public void look(Point3D eye, Point3D center, Vector3D up) {
 
-		this.eye.set(eye.x, eye.y, eye.z);
+		this.eye.set(eye.x + xOffset, eye.y + yOffset, eye.z + zOffset);
 		n = Vector3D.difference(eye, center);
 		u = up.cross(n);
 		n.normalize();
@@ -185,5 +193,19 @@ public class Camera {
 		return matrixBuffer;
 	}
 
-	
+	public void shake() {
+		if(shakeTimer <= shakeTime)
+		{
+			xOffset = RandomGenerator.randomFloatInRange(-1, 1);
+			yOffset = RandomGenerator.randomFloatInRange(-1, 1);
+			//zOffset = RandomGenerator.randomFloatInRange(-1, 1);
+			shakeTimer += 0.5f;
+		}
+		else {
+			//shakeTimer = 0;
+			xOffset = 0;
+			yOffset = 0;
+			zOffset = 0;
+		}
+	}
 }
