@@ -54,6 +54,7 @@ public class RaceGame extends ApplicationAdapter {
 	private ArrayList<Cone> cones;
 
 	// Game settings
+	private boolean godmode = false;
 	private float maxspeed = 0.8f;
 	private float maxAccelration = 0.2f;
 	private float acceleration = 0f;
@@ -216,7 +217,7 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(int i = 0; i < cones.size(); i++) {
 				cones.get(i).update(objSpeed);
-				if(!crashed && cones.get(i).collidingWithPlayer(playerCar)) {
+				if(!godmode && !crashed && cones.get(i).collidingWithPlayer(playerCar)) {
 					if(objSpeed > maxspeed/2){
 						objSpeed = maxspeed/2;
 					}
@@ -230,7 +231,7 @@ public class RaceGame extends ApplicationAdapter {
 			{
 				for(int i = 0; i < cars.size(); i++) {
 					cars.get(i).update(objSpeed);
-					if(cars.get(i).collidingWithPlayer(playerCar)) {
+					if(!godmode && cars.get(i).collidingWithPlayer(playerCar)) {
 						carHornSound.play(1f);
 						acceleration = 0;
 						objSpeed = 0;
@@ -298,6 +299,64 @@ public class RaceGame extends ApplicationAdapter {
 			gameOverMenu = false;
 		}
 
+
+		// Godmode stuff
+		if(Gdx.input.isKeyJustPressed(Input.Keys.G))
+		{
+			godmode = !godmode;
+		}
+
+		if(godmode) {
+			crashBlick += 0.2f;
+			if(Gdx.input.isKeyPressed(Input.Keys.A)) {
+				cam.slide(-3.0f * deltaTime, 0, 0);
+			}
+			if(Gdx.input.isKeyPressed(Input.Keys.D)) {
+				cam.slide(3.0f * deltaTime, 0, 0);
+			}
+			if(Gdx.input.isKeyPressed(Input.Keys.W)) {
+				cam.slide(0, 0, -3.0f * deltaTime);
+				//cam.walkForward(3.0f * deltaTime);
+			}
+			if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+				cam.slide(0, 0, 3.0f * deltaTime);
+				//cam.walkForward(-3.0f * deltaTime);
+			}
+			if(Gdx.input.isKeyPressed(Input.Keys.R)) {
+				cam.slide(0, 3.0f * deltaTime, 0);
+			}
+			if(Gdx.input.isKeyPressed(Input.Keys.F)) {
+				cam.slide(0, -3.0f * deltaTime, 0);
+			}
+			if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+				cam.yaw(-90.0f * deltaTime);
+				//cam.rotateY(90.0f * deltaTime);
+			}
+			if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+				cam.yaw(90.0f * deltaTime);
+				//cam.rotateY(-90.0f * deltaTime);
+			}
+			if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+				cam.pitch(-90.0f * deltaTime);
+			}
+			if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+				cam.pitch(90.0f * deltaTime);
+			}
+
+			if(Gdx.input.isKeyPressed(Input.Keys.Q)) {
+				cam.roll(-90.0f * deltaTime);
+			}
+			if(Gdx.input.isKeyPressed(Input.Keys.E)) {
+				cam.roll(90.0f * deltaTime);
+			}
+
+			if(Gdx.input.isKeyPressed(Input.Keys.T)) {
+				fov -= 30.0f * deltaTime;
+			}
+			if(Gdx.input.isKeyPressed(Input.Keys.G)) {
+				fov += 30.0f * deltaTime;
+			}
+		}
 	}
 
 	private void collidingWithOtherObject(CarObsticle theCar) {
@@ -339,7 +398,8 @@ public class RaceGame extends ApplicationAdapter {
 			if(viewNum == 0)
 			{
 				Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-				cam.look(new Point3D(0f, 6f, -2f), new Point3D(0,0f,3f), new Vector3D(0,1,0));
+				if(!godmode)
+					cam.look(new Point3D(0f, 6f, -2f), new Point3D(0,0f,3f), new Vector3D(0,1,0));
 				cam.perspectiveProjection(fov, (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight(), 0.1f, 100.0f);
 				shader.setViewMatrix(cam.getViewMatrix());
 				shader.setProjectionMatrix(cam.getProjectionMatrix());
@@ -386,10 +446,14 @@ public class RaceGame extends ApplicationAdapter {
 			shader.setModelMatrix(ModelMatrix.main.getMatrix());
 
 			// Draw the playerCar
-			if(!crashed) {
+			if(!godmode && !crashed) {
 				playerCar.display();
 			}
-			else if(crashed && crashBlick % 2 >= 1) {
+			else if(!godmode && crashed && crashBlick % 2 >= 1) {
+				playerCar.display();
+			}
+			else if(godmode && crashBlick % 2 >= 1)
+			{
 				playerCar.display();
 			}
 
