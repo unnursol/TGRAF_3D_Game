@@ -23,7 +23,7 @@ public class Camera {
 	float near;
 	float far;
 
-	private float shakeTime = 3f;
+	public float shakeTime = 3f;
 	public float shakeTimer = 0f;
 	private float xOffset = 0f;
 	private float yOffset = 0f;

@@ -234,6 +234,7 @@ public class RaceGame extends ApplicationAdapter {
 						objSpeed = 0;
 						//cars.remove(i);
 						crashed = true;
+						cam.shake();
 						life --;
 
 					}
@@ -265,7 +266,7 @@ public class RaceGame extends ApplicationAdapter {
 				}
 			}
 			// Game over
-			if(life <= 0) {
+			if(life <= 0 && (cam.shakeTimer >= cam.shakeTime)) {
 				gameOver();
 			}
 		}
