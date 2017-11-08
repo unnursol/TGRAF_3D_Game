@@ -359,10 +359,10 @@ public class RaceGame extends ApplicationAdapter {
 				cam.roll(90.0f * deltaTime);
 			}
 
-			if(Gdx.input.isKeyPressed(Input.Keys.T)) {
+			if(Gdx.input.isKeyPressed(Input.Keys.Y)) {
 				fov -= 30.0f * deltaTime;
 			}
-			if(Gdx.input.isKeyPressed(Input.Keys.G)) {
+			if(Gdx.input.isKeyPressed(Input.Keys.H)) {
 				fov += 30.0f * deltaTime;
 			}
 		}
