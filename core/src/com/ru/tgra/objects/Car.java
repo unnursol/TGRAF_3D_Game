@@ -77,6 +77,14 @@ public class Car
         }
     }
 
+    public void hitCarToRight() {
+        destAngleX -= 8;
+    }
+
+    public void hitCarToTheLeft() {
+        destAngleX += 8;
+    }
+
     public void display()
     {
         ModelMatrix.main.loadIdentityMatrix();
@@ -90,7 +98,7 @@ public class Car
         ModelMatrix.main.popMatrix();
     }
 
-    public float getLane() {
+    public float getAngleX() {
         return angleX;
     }
     public void setLane(float angleX) {

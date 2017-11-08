@@ -58,9 +58,9 @@ public class Object {
         return angleX;
     }
 
-    public boolean collidingWithPlayer(float playerXposition) {
+    public boolean collidingWithPlayer(Car player) {
         if((angleZ >= collisionWidthFront && angleZ <= collisionWidthback) &&
-                (angleX >= playerXposition+collisionWidthLeft && angleX <= playerXposition+collisionWidthRight))
+                (angleX >= player.getAngleX() + collisionWidthLeft && angleX <= player.getAngleX() + collisionWidthRight) )
             return true;
         return false;
     }

@@ -56,4 +56,17 @@ public class CarObsticle extends Object {
             return true;
         return false;
     }
+
+    public boolean collidingWithPlayer(Car player) {
+        if((angleZ >= collisionWidthFront && angleZ <= collisionWidthback) &&
+           (angleX >= player.getAngleX() + collisionWidthLeft && angleX <= player.getAngleX() + collisionWidthRight) ) {
+
+            if(angleX > player.getAngleX())
+               player.hitCarToRight();
+            else if(angleX < player.getAngleX())
+                player.hitCarToTheLeft();
+            return true;
+        }
+        return false;
+    }
 }

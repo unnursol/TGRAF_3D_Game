@@ -180,7 +180,7 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(int i = 0; i < crystals.size(); i++) {
 				crystals.get(i).update(deltaTime, objSpeed);
-				if(crystals.get(i).collidingWithPlayer(playerCar.getLane())) {
+				if(crystals.get(i).collidingWithPlayer(playerCar)) {
 					crystals.remove(i);
 					score += 50;
 				}
@@ -191,7 +191,7 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(int i = 0; i < coins.size(); i++) {
 				coins.get(i).update(deltaTime, objSpeed);
-				if(coins.get(i).collidingWithPlayer(playerCar.getLane())) {
+				if(coins.get(i).collidingWithPlayer(playerCar)) {
 					coinSound.play(1f);
 					coins.remove(i);
 					score += 10;
@@ -204,7 +204,7 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(int i = 0; i < hearts.size(); i++) {
 				hearts.get(i).update(deltaTime, objSpeed);
-				if(hearts.get(i).collidingWithPlayer(playerCar.getLane())) {
+				if(hearts.get(i).collidingWithPlayer(playerCar)) {
 					hearts.remove(i);
 					if(life < maxLife)
 						life += 1;
@@ -216,7 +216,7 @@ public class RaceGame extends ApplicationAdapter {
 
 			for(int i = 0; i < cones.size(); i++) {
 				cones.get(i).update(objSpeed);
-				if(!crashed && cones.get(i).collidingWithPlayer(playerCar.getLane())) {
+				if(!crashed && cones.get(i).collidingWithPlayer(playerCar)) {
 					// SUMTHIN
 				}
 				else if(cones.get(i).isOutOfBounce()) {
@@ -228,7 +228,7 @@ public class RaceGame extends ApplicationAdapter {
 			{
 				for(int i = 0; i < cars.size(); i++) {
 					cars.get(i).update();
-					if(cars.get(i).collidingWithPlayer(playerCar.getLane())) {
+					if(cars.get(i).collidingWithPlayer(playerCar)) {
 						carHornSound.play(1f);
 						acceleration = 0;
 						objSpeed = 0;
