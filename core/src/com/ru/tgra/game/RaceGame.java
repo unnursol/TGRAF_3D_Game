@@ -69,6 +69,10 @@ public class RaceGame extends ApplicationAdapter {
 	private int coinLane;
 	private int coinLaneCount;
 
+	// Trees
+	private int treeType = 0;
+	private int spawn = 0;
+
 	private boolean crashed = false;
 	private float crashTime = maxspeed;
 	private float crashTimer = 0;
@@ -124,6 +128,7 @@ public class RaceGame extends ApplicationAdapter {
 
 		playerCar = new Car(shader);
 
+		// Trees
 
 		// Initialize cameras
 		cam = new Camera();
@@ -607,22 +612,18 @@ public class RaceGame extends ApplicationAdapter {
 				}
 			}
 		}
-		int treeType = 0;
-		boolean spawnTrees = false;
-		int spawn = 0;
 		if(score >= treeLevel) {
-			spawn = RandomGenerator.randomIntegerInRange(0,3);
+			if(spawn == 0){
+				spawn = RandomGenerator.randomIntegerInRange(1,3);
+			} else {
+				spawn = 0;
+			}
 			treeLevel += 500;
 		}
-		if(spawn == 0) {
-			spawnTrees = false;
-		}
-		else if(spawn == 1) {
-			spawnTrees = true;
+		if(spawn == 1) {
 			treeType = 0;
 		}
 		else if(spawn == 2) {
-			spawnTrees = true;
 			treeType = 1;
 			Tree rightTree = new Tree(shader, rightSide + 8, objStartPosition - 8, treeType);
 			Tree leftTree = new Tree(shader, leftSide - 8, objStartPosition - 8, treeType);
@@ -631,12 +632,12 @@ public class RaceGame extends ApplicationAdapter {
 			trees.add(leftTree);
 		}
 		else if(spawn == 3) {
-			spawnTrees = true;
 			treeType = 2;
 		}
 
-		if(spawnTrees)
+		if(spawn != 0)
 		{
+
 			Tree rightTree = new Tree(shader, rightSide, objStartPosition, treeType);
 			Tree leftTree = new Tree(shader, leftSide, objStartPosition, treeType);
 
