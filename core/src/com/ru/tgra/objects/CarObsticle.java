@@ -41,7 +41,7 @@ public class CarObsticle extends Object {
     }
 
     public boolean collidingWithObj(Object obj) {
-        if(angleZ >= obj.angleZ-15f && angleZ <= obj.angleZ+10f)
+        if(angleZ >= obj.angleZ-20f && angleZ <= obj.angleZ+10f)
             return true;
         return false;
     }

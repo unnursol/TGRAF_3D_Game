@@ -252,7 +252,7 @@ public class RaceGame extends ApplicationAdapter {
 				cam.shake();
 				crashBlick += 0.2f;
 				for(int i = 0; i < cars.size(); i++) {
-					cars.get(i).oppositeUpdate();
+					cars.get(i).update(objSpeed);
 					if(cars.get(i).isOppositeOutOfBounce()) {
 						cars.remove(i);
 					}
@@ -522,11 +522,20 @@ public class RaceGame extends ApplicationAdapter {
 				}
 			}
 		}
-		int treeType;
-		if(score > 2000) {
-			treeType = 2;
+		int treeType = 0;
+		boolean spawnTrees = false;
+		if(score < 500) {
+			spawnTrees = false;
 		}
-		else if(score > 1000) {
+		else if(score < 1000) {
+			spawnTrees = true;
+			treeType = 0;
+		}
+		else if(score < 1500) {
+			spawnTrees = false;
+		}
+		else if(score < 2000) {
+			spawnTrees = true;
 			treeType = 1;
 			Tree rightTree = new Tree(shader, rightSide + 8, objStartPosition - 8, treeType);
 			Tree leftTree = new Tree(shader, leftSide - 8, objStartPosition - 8, treeType);
@@ -534,14 +543,22 @@ public class RaceGame extends ApplicationAdapter {
 			trees.add(rightTree);
 			trees.add(leftTree);
 		}
-		else {
-			treeType = 0;
+		else if(score < 2500) {
+			spawnTrees = false;
 		}
-		Tree rightTree = new Tree(shader, rightSide, objStartPosition, treeType);
-		Tree leftTree = new Tree(shader, leftSide, objStartPosition, treeType);
+		else if(score < 3000) {
+			spawnTrees = true;
+			treeType = 2;
+		}
 
-		trees.add(rightTree);
-		trees.add(leftTree);
+		if(spawnTrees)
+		{
+			Tree rightTree = new Tree(shader, rightSide, objStartPosition, treeType);
+			Tree leftTree = new Tree(shader, leftSide, objStartPosition, treeType);
+
+			trees.add(rightTree);
+			trees.add(leftTree);
+		}
 	}
 
 	private boolean doublePosition(int[] positions, int pos){
