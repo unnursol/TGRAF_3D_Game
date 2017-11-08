@@ -47,7 +47,7 @@ public class CarObsticle extends Object {
     }
 
     public boolean collidingSpawnPosition(float xPos, float zPos){
-        if(angleX == xPos && (angleZ >= zPos-15f && angleZ <= zPos + 10f)){
+        if(angleX == xPos && (angleZ >= zPos-15f && angleZ <= zPos + 15f)){
             return true;
         }
         return false;
