@@ -10,12 +10,14 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.ru.tgra.models.*;
 import com.ru.tgra.objects.*;
 import com.ru.tgra.shapes.*;
 import com.ru.tgra.shapes.g3djmodel.G3DJModelLoader;
 import com.ru.tgra.shapes.g3djmodel.MeshModel;
 import com.ru.tgra.utilities.RandomGenerator;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 
 public class RaceGame extends ApplicationAdapter {
 
@@ -93,6 +95,7 @@ public class RaceGame extends ApplicationAdapter {
 		Gdx.graphics.setDisplayMode(disp.width, disp.height, true);
 
 		shader = new Shader();
+		angle = 0f;
 
 		BoxGraphic.create();
 		SphereGraphic.create();
@@ -163,6 +166,7 @@ public class RaceGame extends ApplicationAdapter {
 	private void update()
 	{
 		float deltaTime = Gdx.graphics.getDeltaTime();
+		angle += 10 * deltaTime;
 
 		// While playing the game
 		if(!mainMenu && !gameOverMenu) {
@@ -343,7 +347,7 @@ public class RaceGame extends ApplicationAdapter {
 				cam.perspectiveProjection(fov, (float)Gdx.graphics.getWidth()/(float)Gdx.graphics.getHeight(), 0.1f, 100.0f);
 				shader.setViewMatrix(cam.getViewMatrix());
 				shader.setProjectionMatrix(cam.getProjectionMatrix());
-				shader.setLightPosition(cam.eye.x,cam.eye.y,cam.eye.z,1f);
+//				shader.setLightPosition(cam.eye.x,cam.eye.y,cam.eye.z,1f);
 			}
 			else
 			{
@@ -356,18 +360,16 @@ public class RaceGame extends ApplicationAdapter {
 				shader.setLightPosition(cam.eye.x,10f,cam.eye.z,1f);
 			}
 
-			ModelMatrix.main.loadIdentityMatrix();
-
 			float s = (float)Math.sin((angle / 2.0) * Math.PI / 180.0);
 			float c = (float)Math.cos((angle / 2.0) * Math.PI / 180.0);
 
-			shader.setLightPosition(0.0f + c * 3.0f, 5.0f, 0.0f + s * 3.0f, 1.0f);
+			shader.setLightPosition(0.0f + c * 3.0f, 26f, 0.0f + s * 3.0f, 1.0f);
 
 			float s2 = Math.abs((float)Math.sin((angle / 1.312) * Math.PI / 180.0));
 			float c2 = Math.abs((float)Math.cos((angle / 1.312) * Math.PI / 180.0));
 
-			shader.setSpotDirection(s2, -0.3f, c2, 0.0f);
-			//shader.setSpotDirection(-cam.n.x, -cam.n.y, -cam.n.z, 0.0f);
+			shader.setSpotDirection(s2, 0f, c2, 0.0f);
+//			shader.setSpotDirection(-cam.n.x, -cam.n.y, -cam.n.z, 0.0f);
 			shader.setSpotExponent(0.0f);
 			shader.setConstantAttenuation(1.0f);
 			shader.setLinearAttenuation(0.00f);
@@ -376,14 +378,24 @@ public class RaceGame extends ApplicationAdapter {
 			//shader.setLightColor(s2, 0.4f, c2, 1.0f);
 			shader.setLightColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-			shader.setGlobalAmbient(0.3f, 0.3f, 0.3f, 1);
+			shader.setGlobalAmbient(0f, 0f, 0f, 1);
 
 			shader.setMaterialDiffuse(1.0f, 1.0f, 1.0f, 1.0f);
 			shader.setMaterialSpecular(1.0f, 1.0f, 1.0f, 1.0f);
 			shader.setMaterialEmission(0, 0, 0, 1);
 			shader.setShininess(50.0f);
 
+			ModelMatrix.main.loadIdentityMatrix();
+			ModelMatrix.main.pushMatrix();
+			ModelMatrix.main.addTranslationBaseCoords(0f, -20f, 0f);
+			ModelMatrix.main.addRotationZ(playerCar.getAngleX());
+			ModelMatrix.main.addRotationX(5f);
+			ModelMatrix.main.addTranslation(0f, 20f, 0f);
 			shader.setModelMatrix(ModelMatrix.main.getMatrix());
+			shader.setLightPosition(ModelMatrix.main.getOrigin().x, ModelMatrix.main.getOrigin().y, ModelMatrix.main.getOrigin().z, 1f);
+			ModelMatrix.main.addRotationX(40f);
+			shader.setSpotDirection(ModelMatrix.main.getB().x, ModelMatrix.main.getB().y, ModelMatrix.main.getB().z, 0f);
+			ModelMatrix.main.popMatrix();
 
 			// Draw the playerCar
 			if(!crashed) {
