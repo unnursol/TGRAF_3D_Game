@@ -29,6 +29,9 @@ public class CarObsticle extends Object {
         collisionWidthRight = 4f;
         collisionWidthLeft = -4f;
     }
+    public void update(float playerSpeed){
+        super.update(-speed + playerSpeed);
+    }
     public void update() {
         super.update(+speed);
     }

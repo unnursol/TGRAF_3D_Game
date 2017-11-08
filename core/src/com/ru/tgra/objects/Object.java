@@ -24,6 +24,14 @@ public class Object {
     private Point3D groundCenter;
     private float groundRadius;
 
+    protected float xOffset;
+    protected float yOffset;
+    protected float zOffset;
+
+    protected boolean rotatingSelf;
+    protected float selfRotationX;
+    protected float selfRotationY;
+    protected float selfRotationZ;
 
     public Object(Shader shader, float angleX, float angleZ)
     {
@@ -32,6 +40,10 @@ public class Object {
         this.angleX = angleX;
         this.angleZ = angleZ;
         this.shader = shader;
+        this.selfRotationX = 0f;
+        this.selfRotationY = 0f;
+        this.selfRotationZ = 0f;
+        this.rotatingSelf = false;
     }
 
     public void update(float speed)
@@ -46,9 +58,14 @@ public class Object {
         ModelMatrix.main.addTranslationBaseCoords(groundCenter.x,groundCenter.y,groundCenter.z);
         ModelMatrix.main.addRotationZ(angleX);
         ModelMatrix.main.addRotationX(-angleZ);
-        ModelMatrix.main.addTranslation(0f, groundRadius+height, 0f);
+        ModelMatrix.main.addTranslation(0f+xOffset, groundRadius+height+yOffset, 0f+zOffset);
         ModelMatrix.main.addScale(scale,scale,scale);
         ModelMatrix.main.addRotationY(angleY);
+        if(rotatingSelf){
+            ModelMatrix.main.addRotationX(selfRotationX);
+            ModelMatrix.main.addRotationY(selfRotationY);
+            ModelMatrix.main.addRotationZ(selfRotationZ);
+        }
         shader.setModelMatrix(ModelMatrix.main.getMatrix());
         model.draw(shader);
         ModelMatrix.main.popMatrix();
@@ -66,7 +83,7 @@ public class Object {
     }
 
     public boolean isOutOfBounce() {
-        if(angleZ >= 50)
+        if(angleZ >= 90)
             return true;
         return false;
     }

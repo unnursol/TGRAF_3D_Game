@@ -217,7 +217,9 @@ public class RaceGame extends ApplicationAdapter {
 			for(int i = 0; i < cones.size(); i++) {
 				cones.get(i).update(objSpeed);
 				if(!crashed && cones.get(i).collidingWithPlayer(playerCar)) {
-					// SUMTHIN
+					if(objSpeed > maxspeed/2){
+						objSpeed = maxspeed/2;
+					}
 				}
 				else if(cones.get(i).isOutOfBounce()) {
 					cones.remove(i);
@@ -227,7 +229,7 @@ public class RaceGame extends ApplicationAdapter {
 			if(!crashed)
 			{
 				for(int i = 0; i < cars.size(); i++) {
-					cars.get(i).update();
+					cars.get(i).update(objSpeed);
 					if(cars.get(i).collidingWithPlayer(playerCar)) {
 						carHornSound.play(1f);
 						acceleration = 0;
