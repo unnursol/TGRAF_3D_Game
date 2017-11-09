@@ -24,6 +24,7 @@ public class Car
     private float angleZ = 0f;
     private float destAngleZ = 0f;
     private float maxAngleZ = 45f;
+    private float maxTurnSpeed = 40f;
     private float turnSpeed = 30f;
 
     private MeshModel model;
@@ -43,8 +44,9 @@ public class Car
         return modelPosition;
     }
 
-    public void update(float rawDeltaTime)
+    public void update(float rawDeltaTime, float speed)
     {
+        turnSpeed = speed * maxTurnSpeed;
         if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT) || Gdx.input.isKeyJustPressed(Input.Keys.A)) {
             destAngleX = destAngleX <= -16 ? destAngleX : destAngleX - 8;
         } else if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) || Gdx.input.isKeyJustPressed(Input.Keys.D)) {

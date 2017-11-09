@@ -185,7 +185,7 @@ public class RaceGame extends ApplicationAdapter {
 		if(!mainMenu && !gameOverMenu) {
 			updateSpeed(deltaTime);
 			spawnObjects();
-			playerCar.update(deltaTime);
+			playerCar.update(deltaTime, objSpeed);
 			ground.update(objSpeed);
 
 			for(int i = 0; i < trees.size(); i++) {
