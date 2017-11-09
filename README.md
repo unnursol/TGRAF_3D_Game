@@ -6,7 +6,9 @@
 
 From the root directory execute: `gradle run`
 
-1. Start off by importing the gradle project into your IDE.
+... or:
+
+1. Import the gradle project into your IDE.
 1. Set the `Working directory` in your build/run configurations to the `core/assets/` folder.
 1. Build & Run
 
@@ -30,7 +32,7 @@ Your goal is to drive around the amazing planet while collecting points and crys
 
 ## Cool features
 
-### Models
+### Models & Orbitual rotation
 We learned some basic modeling techniques in blender and were able to put together the **Globe** with multiple diffuse material and stripes to mark between the road-lanes. And we made the **heart** <3 ourselves as well.
 Other models we found online, mostly at free3d.com, imported into blender, color edited and exported using the g3dj exporter.
 
@@ -39,6 +41,8 @@ Other models we found online, mostly at free3d.com, imported into blender, color
 - Coins
 - Traffic cones
 - Crystals
+
+Simple when we finally figured out a proper way to use the ModelMatrix properly, but we are quite proud of all the orbitual movement happening in the scene.
 
 ### Day and Night
 
