@@ -314,6 +314,9 @@ public class RaceGame extends ApplicationAdapter {
 			life = maxLife;
 			gameOverMenu = false;
 			maxspeed = 0.6f;
+			treeLevel = 500;
+			treeSpawn = 0;
+			lastTreeSpawn = 0;
 		}
 
 
