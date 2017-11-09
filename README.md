@@ -42,7 +42,7 @@ Other models we found online, mostly at free3d.com, imported into blender, color
 - Traffic cones
 - Crystals
 
-Simple when we finally figured out a proper way to use the ModelMatrix properly, but we are quite proud of all the orbitual movement happening in the scene.
+When we finally figured out a proper way to use the ModelMatrix class it wasn't very hard... but we are quite proud of all the orbitual movement happening in the scene.
 
 ### Day and Night
 
