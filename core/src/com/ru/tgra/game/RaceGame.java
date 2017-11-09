@@ -60,7 +60,7 @@ public class RaceGame extends ApplicationAdapter {
 
 	// Game settings
 	private boolean godmode = false;
-	private float maxspeed = 0.8f;
+	private float maxspeed = 0.6f;
 	private float maxAccelration = 0.2f;
 	private float acceleration = 0f;
 	private float objSpeed = 0f;
@@ -71,7 +71,8 @@ public class RaceGame extends ApplicationAdapter {
 
 	// Trees
 	private int treeType = 0;
-	private int spawn = 0;
+	private int treeSpawn = 0;
+	private int lastTreeSpawn = 0;
 
 	private boolean crashed = false;
 	private float crashTime = maxspeed;
@@ -312,6 +313,7 @@ public class RaceGame extends ApplicationAdapter {
 			music.setLooping(true);
 			life = maxLife;
 			gameOverMenu = false;
+			maxspeed = 0.6f;
 		}
 
 
@@ -613,17 +615,19 @@ public class RaceGame extends ApplicationAdapter {
 			}
 		}
 		if(score >= treeLevel) {
-			if(spawn == 0){
-				spawn = RandomGenerator.randomIntegerInRange(1,3);
+			if(treeSpawn == 0){
+				treeSpawn = ((lastTreeSpawn + 1) % 3) + 1;
+				maxspeed += 0.1;
 			} else {
-				spawn = 0;
+				lastTreeSpawn = treeSpawn;
+				treeSpawn = 0;
 			}
 			treeLevel += 500;
 		}
-		if(spawn == 1) {
+		if(treeSpawn == 1) {
 			treeType = 0;
 		}
-		else if(spawn == 2) {
+		else if(treeSpawn == 2) {
 			treeType = 1;
 			Tree rightTree = new Tree(shader, rightSide + 8, objStartPosition - 8, treeType);
 			Tree leftTree = new Tree(shader, leftSide - 8, objStartPosition - 8, treeType);
@@ -631,16 +635,14 @@ public class RaceGame extends ApplicationAdapter {
 			trees.add(rightTree);
 			trees.add(leftTree);
 		}
-		else if(spawn == 3) {
+		else if(treeSpawn == 3) {
 			treeType = 2;
 		}
 
-		if(spawn != 0)
+		if(treeSpawn != 0)
 		{
-
 			Tree rightTree = new Tree(shader, rightSide, objStartPosition, treeType);
 			Tree leftTree = new Tree(shader, leftSide, objStartPosition, treeType);
-
 			trees.add(rightTree);
 			trees.add(leftTree);
 		}
